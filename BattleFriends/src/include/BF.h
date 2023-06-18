@@ -7,8 +7,12 @@ namespace BF
 	{
 	private:
 		sf::Texture m_texture;
+		float m_SpeedX, m_SpeedY;
 
 	public:
-		Entity(std::string& filename);
+		Entity(const char* filename);
+		void setSpeed(float x, float y);
+		void update();
+		void bounce();
 	};
 }
