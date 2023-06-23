@@ -1,5 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <BF.h>
+#include <iostream>
+
 
 
 int main()
@@ -8,26 +10,26 @@ int main()
 	//window.setFramerateLimit(60);
 	window.setVerticalSyncEnabled(true);
 
-	//spawn entitites
-	std::vector<BF::Entity> entities;
-	BF::Entity* e;
-	for (int i = 0; i < 10; i++)
-	{
-		e = new BF::Entity("resources/logo.png");
-		entities.push_back(*e);
-		entities[i].move(i * 200.f, i * 100.f);
-	}
 	
-	//set random speed for entities
-	srand(time(0));
-	int rx = 0, ry = 0;
+	BF::Entity player1("resources/logo.png");
+	BF::Player player2("resources/logo.png");
+	player1.setSpeed(0.f, 1.f);
+	player2.move(0.f, 400.f);
+	player2.setSpeed(0.f, -1.f);
+	
+	/*std::vector<bf::Entity> entities;
 	for (int i = 0; i < 10; i++)
 	{
-		rx = (rand() % 11) - 5;
-		ry = (rand() % 11) - 5;
-		entities[i].setSpeed(rx / 10.f, ry / 10.f);
-	}
-
+		entities.emplace_back(bf::Entity("resources/logo.png"));
+		if (i < 5)
+		{
+			entities[i].move(0.f, i * 100.f);
+		}
+		else
+		{
+			entities[i].move(500.f, i * 100.f);
+		}
+	}*/
 
 	while (window.isOpen())
 	{
@@ -41,34 +43,17 @@ int main()
 		window.clear();
 
 		//check collisions
-		for (int i = 0; i < 10; i++)
-		{
-			for (int j = 0; j < 10; j++)
-			{
-				if (j != i)
-				{
-					if (entities[i].getGlobalBounds().intersects(entities[j].getGlobalBounds()))
-					{
-						entities[i].bounce();
-					}
-				}
-			}
-		}
+		BF::check_collisions();
 
 		//update entities
-		for (int i = 0; i < 10; i++)
-		{
-			entities[i].update();
-		}
+		BF::update_Entities();
 
 		//draw entities
-		for (int i = 0; i < 10; i++)
-		{
-			window.draw(entities[i]);
-		}
+		BF::draw_Entities(window);
 
 		window.display();
 	}
+
 
 	return 0;
 }
