@@ -4,32 +4,32 @@
 
 namespace BF
 {
-	
-
 	class Entity : public sf::Sprite
 	{
 	public:
 		Entity(const char* filename);
-		Entity();
+		Entity() = delete;
 		~Entity();
-		Entity(const Entity&) = delete;
-		Entity& operator= (const Entity&) = delete;
-		void loadTexture(const char* filename);
-		void setTexture();
+		Entity(Entity&& other) noexcept;
+		Entity& operator= (const Entity&) = default;
 		void setSpeed(float x, float y);
 		virtual void update();
 		friend void bounce(Entity& a, Entity& b);
+		bool intersects(const Entity& other);
 
 	private:
-		static int num;
-		float m_SpeedX = 0, m_SpeedY = 0;
-		bool m_collided = false;
+		static int s_num;
+		float m_SpeedX = 0.f, m_SpeedY = 0.f;
+		float m_mass = 1.f;
+		float radius = 1.f;
 		sf::Texture m_texture;
+		
+		void setRadius();
 	};
 
-	void update_Entities();
-	void draw_Entities(sf::RenderTarget& target);
-	void check_collisions();
+	void updateEntities();
+	void drawEntities(sf::RenderTarget& target);
+	void checkCollisions();
 
 	class Player : public Entity
 	{
@@ -41,5 +41,6 @@ namespace BF
 
 	private:
 		bool m_changedDirecton = true;
+
 	};
 }

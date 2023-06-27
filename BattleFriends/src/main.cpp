@@ -1,7 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <BF.h>
 #include <iostream>
-
+#define ENTITY_NUM 9
 
 
 int main()
@@ -10,26 +10,28 @@ int main()
 	//window.setFramerateLimit(60);
 	window.setVerticalSyncEnabled(true);
 
-	
-	BF::Entity player1("resources/logo.png");
+	/*BF::Entity player1("resources/logo.png");
 	BF::Player player2("resources/logo.png");
 	player1.setSpeed(0.f, 1.f);
 	player2.move(0.f, 400.f);
-	player2.setSpeed(0.f, -1.f);
-	
-	/*std::vector<bf::Entity> entities;
-	for (int i = 0; i < 10; i++)
+	player2.setSpeed(0.f, -1.f);*/
+
+	std::unique_ptr player = std::make_unique<BF::Player>("resources/logo.png");
+	std::vector<std::unique_ptr<BF::Entity>> entities;
+	for (int i = 0; i < ENTITY_NUM; i++)
 	{
-		entities.emplace_back(bf::Entity("resources/logo.png"));
+		entities.push_back(std::make_unique<BF::Entity>("resources/logo.png"));
 		if (i < 5)
 		{
-			entities[i].move(0.f, i * 100.f);
+			entities[i]->move((i + 1) * 200.f, 50.f);
+			entities[i]->setSpeed(0.f, 0.1f);
 		}
 		else
 		{
-			entities[i].move(500.f, i * 100.f);
+			entities[i]->move((i - 5) * 200.f, 550.f);
+			entities[i]->setSpeed(0.f, -0.1f);
 		}
-	}*/
+	}
 
 	while (window.isOpen())
 	{
@@ -43,17 +45,16 @@ int main()
 		window.clear();
 
 		//check collisions
-		BF::check_collisions();
+		BF::checkCollisions();
 
 		//update entities
-		BF::update_Entities();
+		BF::updateEntities();
 
 		//draw entities
-		BF::draw_Entities(window);
+		BF::drawEntities(window);
 
 		window.display();
 	}
-
 
 	return 0;
 }

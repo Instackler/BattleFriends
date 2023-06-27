@@ -1,50 +1,41 @@
 #include <BF.h>
 
 static std::vector<BF::Entity*> game_Entities;
-int BF::Entity::num = 0;
+static bool init = true;
+int BF::Entity::s_num = 0;
 
 BF::Entity::Entity(const char* filename)
-	:m_SpeedX(0.f), m_SpeedY(0.f)
 {
 	m_texture.loadFromFile(filename);
 	sf::Sprite::setTexture(m_texture);
 
+	sf::FloatRect bounding_box = getLocalBounds();
+	setOrigin(bounding_box.width / 2.f, bounding_box.height / 2.f);
+
 	game_Entities.push_back(this);
-	num++;
+	s_num++;
 
 	std::cout << "Created Entity" << std::endl;
 }
 
-BF::Entity::Entity()
-	:m_SpeedX(0.f), m_SpeedY(0.f)
-{
-	game_Entities.push_back(this);
-	num++;
-	std::cout << "Created empty Entity" << std::endl;
-}
-
 BF::Entity::~Entity()
 {
-	for (int i = 0; i < num; i++)
+	for (int i = 0; i < s_num; i++)
 	{
 		if (game_Entities[i] == this)
 		{
 			game_Entities.erase(game_Entities.begin() + i);
+			s_num--;
 		}
 	}
-	num--;
 	game_Entities.shrink_to_fit();
 	std::cout << "Destroyed Entity" << std::endl;
 }
 
-void BF::Entity::loadTexture(const char* filename)
+BF::Entity::Entity(Entity&& other) noexcept
 {
-	m_texture.loadFromFile(filename);
-}
-
-void BF::Entity::setTexture()
-{
-	sf::Sprite::setTexture(m_texture);
+	m_texture = other.m_texture;
+	std::cout << "Copied Entity" << std::endl;
 }
 
 void BF::Entity::setSpeed(float x, float y)
@@ -56,13 +47,19 @@ void BF::Entity::setSpeed(float x, float y)
 void BF::Entity::update()
 {
 	move(m_SpeedX, m_SpeedY);
-	m_collided = false;
+}
+
+bool BF::Entity::intersects(const Entity& other)
+{
+
+
+	return false;
 }
 
 
 void BF::bounce(Entity& a, Entity& b)
 {
-	if (a.m_collided || b.m_collided)
+	/*if (a.m_collided || b.m_collided)
 	{
 		return;
 	}
@@ -77,10 +74,10 @@ void BF::bounce(Entity& a, Entity& b)
 		b.m_SpeedY = a_prevSpeedY;
 	}
 	a.m_collided = true;
-	b.m_collided = true;
+	b.m_collided = true;*/
 }
 
-void BF::update_Entities()
+void BF::updateEntities()
 {
 	for (int i = 0; i < game_Entities.size(); i++)
 	{
@@ -88,7 +85,7 @@ void BF::update_Entities()
 	}
 }
 
-void BF::draw_Entities(sf::RenderTarget& target)
+void BF::drawEntities(sf::RenderTarget& target)
 {
 	for (int i = 0; i < game_Entities.size(); i++)
 	{
@@ -96,7 +93,7 @@ void BF::draw_Entities(sf::RenderTarget& target)
 	}
 }
 
-void BF::check_collisions()
+void BF::checkCollisions()
 {
 	for (int i = 0; i < game_Entities.size(); i++)
 	{
@@ -113,8 +110,8 @@ void BF::check_collisions()
 
 
 BF::Player::Player(const char* filename)
+	:Entity(filename)
 {
-	loadTexture(filename);
 	std::cout << "Created Player" << std::endl;
 }
 
@@ -125,11 +122,10 @@ BF::Player::~Player()
 
 void BF::Player::update()
 {
-	if (m_changedDirecton)
+	setSpeed(0.f, 0.f);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
-		setTexture();
-		m_changedDirecton = false;
+		setSpeed(1.f, 0.f);
 	}
-
 	Entity::update();
 }
