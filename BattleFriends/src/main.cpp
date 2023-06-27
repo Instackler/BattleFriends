@@ -17,21 +17,24 @@ int main()
 	player2.setSpeed(0.f, -1.f);*/
 
 	std::unique_ptr player = std::make_unique<BF::Player>("resources/logo.png");
+	player->move(220.f, 101.f);
 	std::vector<std::unique_ptr<BF::Entity>> entities;
+	srand(time(NULL));
 	for (int i = 0; i < ENTITY_NUM; i++)
 	{
 		entities.push_back(std::make_unique<BF::Entity>("resources/logo.png"));
-		if (i < 5)
+		if (i < 4)
 		{
-			entities[i]->move((i + 1) * 200.f, 50.f);
-			entities[i]->setSpeed(0.f, 0.1f);
+			entities[i]->move((i + 2) * 220.f, 100.f);
+			entities[i]->setSpeed(((rand() % 11) - 5) / 20.f, (rand() % 11) / 10.f);
 		}
 		else
 		{
-			entities[i]->move((i - 5) * 200.f, 550.f);
-			entities[i]->setSpeed(0.f, -0.1f);
+			entities[i]->move((i - 3) * 210.f, 600.f);
+			entities[i]->setSpeed(((rand() % 11) - 5) / 20.f, ((rand() % 11) - 10) / 10.f);
 		}
 	}
+	entities[1]->stationary = true;
 
 	while (window.isOpen())
 	{

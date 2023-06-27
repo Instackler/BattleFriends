@@ -11,6 +11,8 @@ BF::Entity::Entity(const char* filename)
 
 	sf::FloatRect bounding_box = getLocalBounds();
 	setOrigin(bounding_box.width / 2.f, bounding_box.height / 2.f);
+	radius = bounding_box.width < bounding_box.height ?
+		bounding_box.width / 2.f : bounding_box.height / 2.f;
 
 	game_Entities.push_back(this);
 	s_num++;
@@ -51,37 +53,64 @@ void BF::Entity::update()
 
 bool BF::Entity::intersects(const Entity& other)
 {
+	auto x = getPosition().x;
+	auto y = getPosition().y;
 
+	auto other_x = other.getPosition().x;
+	auto other_y = other.getPosition().y;
+
+	if (hypotf(fabsf(x - other_x), fabsf(y - other_y)) < radius + other.radius)
+	{
+		return true;
+	}
 
 	return false;
 }
 
-
 void BF::bounce(Entity& a, Entity& b)
 {
-	/*if (a.m_collided || b.m_collided)
+	if (a.m_collided && b.m_collided)
 	{
 		return;
 	}
 	else
 	{
-		float a_prevSpeedX = a.m_SpeedX;
-		a.m_SpeedX = b.m_SpeedX;
-		b.m_SpeedX = a_prevSpeedX;
+		if (a.stationary)
+		{
+			a.setSpeed(b.m_SpeedX * -1.f, b.m_SpeedY * -1.f);
+		}
 
-		float a_prevSpeedY = a.m_SpeedY;
-		a.m_SpeedY = b.m_SpeedY;
-		b.m_SpeedY = a_prevSpeedY;
+		if (b.stationary)
+		{
+			b.setSpeed(a.m_SpeedX * -1.f, a.m_SpeedY * -1.f);
+		}
+
+		float dx = b.getPosition().x - a.getPosition().x;
+		float dy = b.getPosition().y - a.getPosition().y;
+		float d = hypotf(fabsf(dx), fabsf(dy));
+		float nx = dx / d;
+		float ny = dy / d;
+		float p = 2 * (a.m_SpeedX * nx + a.m_SpeedY * ny - b.m_SpeedX * nx - b.m_SpeedY * ny) / (a.radius + b.radius);
+		a.m_SpeedX -= p * b.radius * nx;
+		a.m_SpeedY -= p * b.radius * ny;
+		b.m_SpeedX += p * a.radius * nx;
+		b.m_SpeedY += p * a.radius * ny;
 	}
 	a.m_collided = true;
-	b.m_collided = true;*/
+	b.m_collided = true;
 }
 
 void BF::updateEntities()
 {
 	for (int i = 0; i < game_Entities.size(); i++)
 	{
+		if (game_Entities[i]->stationary)
+		{
+			game_Entities[i]->setSpeed(0.f, 0.f);
+		}
+
 		game_Entities[i]->update();
+		game_Entities[i]->m_collided = false;
 	}
 }
 
@@ -101,8 +130,10 @@ void BF::checkCollisions()
 		{
 			if (i != j)
 			{
-				if (game_Entities[i]->getGlobalBounds().intersects(game_Entities[j]->getGlobalBounds()))
+				if (game_Entities[i]->intersects(*game_Entities[j]))
+				{
 					bounce(*game_Entities[i], *game_Entities[j]);
+				}
 			}
 		}
 	}
@@ -122,10 +153,14 @@ BF::Player::~Player()
 
 void BF::Player::update()
 {
-	setSpeed(0.f, 0.f);
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	if (!m_collided)
 	{
-		setSpeed(1.f, 0.f);
+		setSpeed(0.f, 0.f);
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+		{
+			setSpeed(1.f, 0.f);
+		}
 	}
 	Entity::update();
 }
+	

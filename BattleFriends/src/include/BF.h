@@ -16,20 +16,25 @@ namespace BF
 		virtual void update();
 		friend void bounce(Entity& a, Entity& b);
 		bool intersects(const Entity& other);
+		friend void updateEntities();
+		friend void checkCollisions();
+		bool stationary = false;
 
 	private:
 		static int s_num;
 		float m_SpeedX = 0.f, m_SpeedY = 0.f;
 		float m_mass = 1.f;
 		float radius = 1.f;
+
+	protected:
+		bool m_collided = false;
 		sf::Texture m_texture;
-		
-		void setRadius();
 	};
 
 	void updateEntities();
 	void drawEntities(sf::RenderTarget& target);
 	void checkCollisions();
+
 
 	class Player : public Entity
 	{
