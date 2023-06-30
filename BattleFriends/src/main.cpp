@@ -1,7 +1,39 @@
 #include <SFML/Graphics.hpp>
 #include <BF.h>
 #include <iostream>
+#include <Windows.h>
+#include <winres.h>
+#include <resource.h>
 #define ENTITY_NUM 9
+
+
+
+sf::Texture loadTexture(int name)
+{
+	HRSRC hResource = FindResourceA(NULL, MAKEINTRESOURCE(name), TEXT("PNG"));
+	if (hResource != NULL) {
+		DWORD resourceSize = SizeofResource(NULL, hResource);
+		HGLOBAL hResourceData = LoadResource(NULL, hResource);
+		if (hResourceData != NULL) {
+
+			sf::Texture texture;
+			LPVOID pData = LockResource(hResourceData);
+
+			sf::Image image;
+			image.loadFromMemory(pData, resourceSize);
+			
+			texture.create(image.getSize().x, image.getSize().y);
+			texture.update(image);
+
+			FreeResource(hResourceData);
+
+			return texture;
+		}
+		// return errTexture;
+	}
+	// return noTexture;
+}
+
 
 
 int main()
@@ -10,12 +42,16 @@ int main()
 	//window.setFramerateLimit(60);
 	window.setVerticalSyncEnabled(true);
 
-	/*BF::Entity player1("resources/logo.png");
-	BF::Player player2("resources/logo.png");
-	player1.setSpeed(0.f, 1.f);
-	player2.move(0.f, 400.f);
-	player2.setSpeed(0.f, -1.f);*/
+	
+	sf::Sprite spr;
+	sf::Texture tex = loadTexture(IDB_PNG1);
+	spr.setTexture(tex);
+	
+	
+	
 
+
+	/*
 	std::unique_ptr player = std::make_unique<BF::Player>("resources/logo.png");
 	player->move(220.f, 101.f);
 	std::vector<std::unique_ptr<BF::Entity>> entities;
@@ -35,6 +71,7 @@ int main()
 		}
 	}
 	entities[1]->stationary = true;
+	*/
 
 	while (window.isOpen())
 	{
@@ -55,6 +92,8 @@ int main()
 
 		//draw entities
 		BF::drawEntities(window);
+
+		window.draw(spr);
 
 		window.display();
 	}

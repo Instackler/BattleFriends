@@ -26,5 +26,18 @@
     <ClInclude Include="src\include\BF.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\include\resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <_EmbedManagedResourceFile Include="resources\logo.png">
+      <Filter>Resource Files</Filter>
+    </_EmbedManagedResourceFile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="BattleFriends.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
