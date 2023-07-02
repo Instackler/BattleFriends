@@ -1,57 +1,19 @@
 #include <SFML/Graphics.hpp>
 #include <BF.h>
+#include <loadTexture.h>
 #include <iostream>
-#include <Windows.h>
-#include <winres.h>
-#include <resource.h>
+
 #define ENTITY_NUM 9
 
-
-
-sf::Texture loadTexture(int name)
-{
-	HRSRC hResource = FindResourceA(NULL, MAKEINTRESOURCE(name), TEXT("PNG"));
-	if (hResource != NULL) {
-		DWORD resourceSize = SizeofResource(NULL, hResource);
-		HGLOBAL hResourceData = LoadResource(NULL, hResource);
-		if (hResourceData != NULL) {
-
-			sf::Texture texture;
-			LPVOID pData = LockResource(hResourceData);
-
-			sf::Image image;
-			image.loadFromMemory(pData, resourceSize);
-			
-			texture.create(image.getSize().x, image.getSize().y);
-			texture.update(image);
-
-			FreeResource(hResourceData);
-
-			return texture;
-		}
-		// return errTexture;
-	}
-	// return noTexture;
-}
 
 
 
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(1280, 720), "SFML works!", sf::Style::Close);
-	//window.setFramerateLimit(60);
-	window.setVerticalSyncEnabled(true);
+	window.setFramerateLimit(120);
 
 	
-	sf::Sprite spr;
-	sf::Texture tex = loadTexture(IDB_PNG1);
-	spr.setTexture(tex);
-	
-	
-	
-
-
-	/*
 	std::unique_ptr player = std::make_unique<BF::Player>("resources/logo.png");
 	player->move(220.f, 101.f);
 	std::vector<std::unique_ptr<BF::Entity>> entities;
@@ -62,17 +24,24 @@ int main()
 		if (i < 4)
 		{
 			entities[i]->move((i + 2) * 220.f, 100.f);
-			entities[i]->setSpeed(((rand() % 11) - 5) / 20.f, (rand() % 11) / 10.f);
+			entities[i]->setSpeed(((rand() % 11) - 5) / 20.0f, (rand() % 11) / 10.0f);
 		}
 		else
 		{
 			entities[i]->move((i - 3) * 210.f, 600.f);
-			entities[i]->setSpeed(((rand() % 11) - 5) / 20.f, ((rand() % 11) - 10) / 10.f);
+			entities[i]->setSpeed(((rand() % 11) - 5) / 20.0f, ((rand() % 11) - 10) / 10.0f);
 		}
 	}
 	entities[1]->stationary = true;
-	*/
+	entities[5]->stationary = true;
 
+	sf::Font font;
+	font.loadFromFile("resources/fonts/raleway/Raleway-SemiBold.ttf");
+	sf::Text text;
+	text.setFont(font);
+	text.setString("Hello world");
+
+	sf::Clock clock;
 	while (window.isOpen())
 	{
 		sf::Event event;
@@ -83,19 +52,21 @@ int main()
 		}
 
 		window.clear();
+		
+		//update entities
+		BF::updateEntities();
 
 		//check collisions
 		BF::checkCollisions();
 
-		//update entities
-		BF::updateEntities();
-
 		//draw entities
 		BF::drawEntities(window);
 
-		window.draw(spr);
+		window.draw(text);
 
 		window.display();
+
+		text.setString(std::to_string(1.f / clock.restart().asSeconds()));
 	}
 
 	return 0;

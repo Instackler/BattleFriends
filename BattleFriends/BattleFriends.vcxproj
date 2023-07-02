@@ -163,9 +163,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\BF.cpp" />
+    <ClCompile Include="src\loadTexture.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\include\loadTexture.h" />
     <ClInclude Include="src\include\resource.h" />
     <ClInclude Include="src\include\BF.h" />
   </ItemGroup>
@@ -174,6 +176,9 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="BattleFriends.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\proj.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

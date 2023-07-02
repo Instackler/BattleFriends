@@ -7,7 +7,7 @@ int BF::Entity::s_num = 0;
 BF::Entity::Entity(const char* filename)
 {
 	m_texture.loadFromFile(filename);
-	sf::Sprite::setTexture(m_texture);
+	setTexture(m_texture);
 
 	sf::FloatRect bounding_box = getLocalBounds();
 	setOrigin(bounding_box.width / 2.f, bounding_box.height / 2.f);
@@ -53,11 +53,11 @@ void BF::Entity::update()
 
 bool BF::Entity::intersects(const Entity& other)
 {
-	auto x = getPosition().x;
-	auto y = getPosition().y;
+	float x = getPosition().x;
+	float y = getPosition().y;
 
-	auto other_x = other.getPosition().x;
-	auto other_y = other.getPosition().y;
+	float other_x = other.getPosition().x;
+	float other_y = other.getPosition().y;
 
 	if (hypotf(fabsf(x - other_x), fabsf(y - other_y)) < radius + other.radius)
 	{
@@ -67,50 +67,53 @@ bool BF::Entity::intersects(const Entity& other)
 	return false;
 }
 
-void BF::bounce(Entity& a, Entity& b)
+void BF::Entity::collide(Entity& other)
 {
-	if (a.m_collided && b.m_collided)
+	if (this->m_collided && other.m_collided)
 	{
 		return;
 	}
 	else
 	{
-		if (a.stationary)
+		if (this->stationary)
 		{
-			a.setSpeed(b.m_SpeedX * -1.f, b.m_SpeedY * -1.f);
+			setSpeed(other.m_SpeedX * -1.f, other.m_SpeedY * -1.f);
 		}
 
-		if (b.stationary)
+		if (other.stationary)
 		{
-			b.setSpeed(a.m_SpeedX * -1.f, a.m_SpeedY * -1.f);
+			other.setSpeed(this->m_SpeedX * -1.f, this->m_SpeedY * -1.f);
 		}
-
-		float dx = b.getPosition().x - a.getPosition().x;
-		float dy = b.getPosition().y - a.getPosition().y;
+		
+		float dx = other.getPosition().x - this->getPosition().x;
+		float dy = other.getPosition().y - this->getPosition().y;
 		float d = hypotf(fabsf(dx), fabsf(dy));
 		float nx = dx / d;
 		float ny = dy / d;
-		float p = 2 * (a.m_SpeedX * nx + a.m_SpeedY * ny - b.m_SpeedX * nx - b.m_SpeedY * ny) / (a.radius + b.radius);
-		a.m_SpeedX -= p * b.radius * nx;
-		a.m_SpeedY -= p * b.radius * ny;
-		b.m_SpeedX += p * a.radius * nx;
-		b.m_SpeedY += p * a.radius * ny;
+		float p = 2 * (this->m_SpeedX * nx + this->m_SpeedY * ny - other.m_SpeedX * nx - other.m_SpeedY * ny) / (this->radius + other.radius);
+		this->m_SpeedX -= p * other.radius * nx;
+		this->m_SpeedY -= p * other.radius * ny;
+		other.m_SpeedX += p * this->radius * nx;
+		other.m_SpeedY += p * this->radius * ny;
 	}
-	a.m_collided = true;
-	b.m_collided = true;
+	this->m_collided = true;
+	other.m_collided = true;
 }
 
 void BF::updateEntities()
 {
 	for (int i = 0; i < game_Entities.size(); i++)
 	{
-		if (game_Entities[i]->stationary)
+		if (game_Entities[i]->health > 0)
 		{
-			game_Entities[i]->setSpeed(0.f, 0.f);
-		}
+			if (game_Entities[i]->stationary)
+			{
+				game_Entities[i]->setSpeed(0.f, 0.f);
+			}
 
-		game_Entities[i]->update();
-		game_Entities[i]->m_collided = false;
+			game_Entities[i]->update();
+			game_Entities[i]->m_collided = false;
+		}
 	}
 }
 
@@ -118,7 +121,10 @@ void BF::drawEntities(sf::RenderTarget& target)
 {
 	for (int i = 0; i < game_Entities.size(); i++)
 	{
-		target.draw(*(game_Entities[i]));
+		if (game_Entities[i]->health > 0)
+		{
+			target.draw(*(game_Entities[i]));
+		}
 	}
 }
 
@@ -126,17 +132,25 @@ void BF::checkCollisions()
 {
 	for (int i = 0; i < game_Entities.size(); i++)
 	{
-		for (int j = 0; j < game_Entities.size(); j++)
+		if (game_Entities[i]->health > 0)
 		{
-			if (i != j)
+			for (int j = 0; j < game_Entities.size(); j++)
 			{
-				if (game_Entities[i]->intersects(*game_Entities[j]))
+				if ((game_Entities[j]->health > 0) && i != j)
 				{
-					bounce(*game_Entities[i], *game_Entities[j]);
+					if (game_Entities[i]->intersects(*game_Entities[j]))
+					{
+						game_Entities[i]->collide(*game_Entities[j]);
+					}
 				}
 			}
 		}
 	}
+}
+
+void BF::checkHits()
+{
+	 
 }
 
 
@@ -156,11 +170,49 @@ void BF::Player::update()
 	if (!m_collided)
 	{
 		setSpeed(0.f, 0.f);
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-		{
-			setSpeed(1.f, 0.f);
-		}
+		checkInput();
 	}
 	Entity::update();
 }
+
+void BF::Player::checkInput()
+{
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+	{
+		m_SpeedY -= 1.f;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	{
+		m_SpeedX -= 1.f;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+	{
+		m_SpeedY += 1.f;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	{
+		m_SpeedX += 1.f;
+	}
+
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	{
+		shoot();
+	}
+}
+
+void BF::Player::shoot()
+{
 	
+}
+
+BF::Projectile::Projectile()
+	:Entity("resources/proj.png")
+{
+	health = 1;
+}
+
+void BF::Projectile::collide(Entity& other)
+{
+	other.health -= damage;
+	this->health--;
+}
