@@ -1,10 +1,8 @@
-#include <SFML/Graphics.hpp>
+#include <pch.h>
+
 #include <BF.h>
-#include <loadTexture.h>
-#include <iostream>
 
 #define ENTITY_NUM 9
-
 
 
 

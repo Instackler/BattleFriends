@@ -1,3 +1,4 @@
+#include <pch.h>
 #include <loadTexture.h>
 
 sf::Texture loadTexture(int name)
