@@ -7,8 +7,12 @@ int BF::Entity::s_num = 0;
 
 BF::Entity::Entity(const char* filename)
 {
-	m_texture.loadFromFile(filename);
-	setTexture(m_texture);
+	//m_texture = new sf::Texture();
+	//m_texture->loadFromFile(filename);
+	//setTexture(*m_texture);
+
+	m_Texture.loadFromFile(filename);
+	setTexture(m_Texture);
 
 	sf::FloatRect bounding_box = getLocalBounds();
 	setOrigin(bounding_box.width / 2.f, bounding_box.height / 2.f);
@@ -20,12 +24,13 @@ BF::Entity::Entity(const char* filename)
 
 BF::Entity::~Entity()
 {
+	//setTexture(*m_texture);
 	std::cout << "Destroyed Entity" << std::endl;
 }
 
 BF::Entity::Entity(Entity&& other) noexcept
 {
-	m_texture = other.m_texture;
+	//m_texture = other.m_texture;
 	std::cout << "Copied Entity" << std::endl;
 }
 

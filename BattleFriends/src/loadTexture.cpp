@@ -1,7 +1,7 @@
 #include <pch.h>
 #include <loadTexture.h>
 
-sf::Texture loadTexture(int name)
+sf::Texture BF::loadTexture(int name)
 {
 	HRSRC hResource = FindResourceA(NULL, MAKEINTRESOURCE(name), TEXT("PNG"));
 	if (hResource != NULL) {

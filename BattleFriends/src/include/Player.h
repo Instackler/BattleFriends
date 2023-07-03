@@ -8,6 +8,8 @@ namespace BF
 	{
 	public:
 		Player(const char* filename);
+		Player() = delete;
+		Player& operator= (const Player&) = default;
 		~Player();
 
 		void update() override;

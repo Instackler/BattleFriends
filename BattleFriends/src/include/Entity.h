@@ -26,7 +26,8 @@ namespace BF
 
 	protected:
 		bool m_collided = false;
-		sf::Texture m_texture;
+		//sf::Texture *m_texture;
+		sf::Texture m_Texture;
 		float m_SpeedX = 0.f, m_SpeedY = 0.f;
 		int health = 100;
 
