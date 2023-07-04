@@ -7,7 +7,7 @@ std::vector<BF::Entity> BF::entities;
 
 void BF::init()
 {
-	entities.reserve(1000);
+	entities.reserve(256);
 }
 
 void BF::updateEntities()
@@ -22,7 +22,6 @@ void BF::updateEntities()
 			}
 
 			entity.update();
-			entity.m_collided = false;
 		}
 	}
 }

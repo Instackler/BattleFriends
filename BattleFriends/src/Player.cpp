@@ -1,5 +1,4 @@
 #include <pch.h>
-
 #include <Player.h>
 
 
@@ -16,11 +15,8 @@ BF::Player::~Player()
 
 void BF::Player::update()
 {
-	if (!m_collided)
-	{
-		setSpeed(0.f, 0.f);
-		checkInput();
-	}
+	setSpeed(0.f, 0.f);
+	checkInput();
 	Entity::update();
 }
 

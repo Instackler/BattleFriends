@@ -1,16 +1,14 @@
 #include <pch.h>
-
 #include <BF.h>
 
 #define ENTITY_NUM 9
 
 
-
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(1280, 720), "BattleFriends", sf::Style::Close);
-	window.setFramerateLimit(120);
-
+	window.setFramerateLimit(500);
+	
 
 	BF::init();
 	srand(time(NULL));
@@ -30,16 +28,19 @@ int main()
 		}
 	}
 	BF::entities[1].stationary = true;
-	BF::entities[5].stationary = true;
-	
+	BF::entities[4].stationary = true;
 
+
+	#ifdef _DEBUG
 	sf::Font font;
 	font.loadFromFile("resources/fonts/raleway/Raleway-SemiBold.ttf");
 	sf::Text fpsCounter;
 	fpsCounter.setFont(font);
 	fpsCounter.setString("Hello world");
-
 	sf::Clock clock;
+	#endif // _DEBUG
+
+
 	while (window.isOpen())
 	{
 		sf::Event event;
@@ -51,20 +52,16 @@ int main()
 
 		window.clear();
 		
-		//update entities
-		BF::updateEntities();
+		BF::updateEntities();  //update entities
+		BF::checkCollisions();  //check collisions
+		BF::drawEntities(window);  //draw entities
 
-		//check collisions
-		BF::checkCollisions();
-
-		//draw entities
-		BF::drawEntities(window);
-
+		#ifdef _DEBUG
 		window.draw(fpsCounter);
-
-		window.display();
-
 		fpsCounter.setString(std::to_string(1.f / clock.restart().asSeconds()));
+		#endif // _DEBUG
+		
+		window.display();
 	}
 
 	BF::entities.clear();

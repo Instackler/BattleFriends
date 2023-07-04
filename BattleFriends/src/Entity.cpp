@@ -1,5 +1,4 @@
 #include <pch.h>
-
 #include <Entity.h>
 
 
@@ -7,10 +6,6 @@ int BF::Entity::s_num = 0;
 
 BF::Entity::Entity(const char* filename)
 {
-	//m_texture = new sf::Texture();
-	//m_texture->loadFromFile(filename);
-	//setTexture(*m_texture);
-
 	m_Texture.loadFromFile(filename);
 	setTexture(m_Texture);
 
@@ -24,13 +19,12 @@ BF::Entity::Entity(const char* filename)
 
 BF::Entity::~Entity()
 {
-	//setTexture(*m_texture);
 	std::cout << "Destroyed Entity" << std::endl;
 }
 
 BF::Entity::Entity(Entity&& other) noexcept
 {
-	//m_texture = other.m_texture;
+	m_Texture = other.m_Texture;
 	std::cout << "Copied Entity" << std::endl;
 }
 
@@ -63,33 +57,24 @@ bool BF::Entity::intersects(const Entity& other)
 
 void BF::Entity::collide(Entity& other)
 {
-	if (this->m_collided && other.m_collided)
+	if (this->stationary)
 	{
-		return;
+		setSpeed(other.m_SpeedX * -1.f, other.m_SpeedY * -1.f);
 	}
-	else
+
+	if (other.stationary)
 	{
-		if (this->stationary)
-		{
-			setSpeed(other.m_SpeedX * -1.f, other.m_SpeedY * -1.f);
-		}
-
-		if (other.stationary)
-		{
-			other.setSpeed(this->m_SpeedX * -1.f, this->m_SpeedY * -1.f);
-		}
-
-		float dx = other.getPosition().x - this->getPosition().x;
-		float dy = other.getPosition().y - this->getPosition().y;
-		float d = hypotf(fabsf(dx), fabsf(dy));
-		float nx = dx / d;
-		float ny = dy / d;
-		float p = 2 * (this->m_SpeedX * nx + this->m_SpeedY * ny - other.m_SpeedX * nx - other.m_SpeedY * ny) / (this->radius + other.radius);
-		this->m_SpeedX -= p * other.radius * nx;
-		this->m_SpeedY -= p * other.radius * ny;
-		other.m_SpeedX += p * this->radius * nx;
-		other.m_SpeedY += p * this->radius * ny;
+		other.setSpeed(this->m_SpeedX * -1.f, this->m_SpeedY * -1.f);
 	}
-	this->m_collided = true;
-	other.m_collided = true;
+
+	float dx = other.getPosition().x - this->getPosition().x;
+	float dy = other.getPosition().y - this->getPosition().y;
+	float d = hypotf(fabsf(dx), fabsf(dy));
+	float nx = dx / d;
+	float ny = dy / d;
+	float p = 2 * (this->m_SpeedX * nx + this->m_SpeedY * ny - other.m_SpeedX * nx - other.m_SpeedY * ny) / (this->radius + other.radius);
+	this->m_SpeedX -= p * other.radius * nx;
+	this->m_SpeedY -= p * other.radius * ny;
+	other.m_SpeedX += p * this->radius * nx;
+	other.m_SpeedY += p * this->radius * ny;
 }
