@@ -14,7 +14,6 @@ namespace BF
 		virtual void update();
 		virtual void collide(Entity& other);
 		bool intersects(const Entity& other);
-		friend void updateEntities();
 		friend void checkCollisions();
 		friend void drawEntities(sf::RenderTarget& target);
 		friend class Projectile;
@@ -23,7 +22,7 @@ namespace BF
 	private:
 		static int s_num;
 		float radius = 1.f;
-
+		
 	protected:
 		sf::Texture m_Texture;
 		float m_SpeedX = 0.f, m_SpeedY = 0.f;

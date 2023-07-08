@@ -7,7 +7,7 @@ namespace BF
 	{
 	public:
 		Projectile();
-		void collide(Entity& other);
+		void collide(Entity& other) override;
 
 	private:
 		int damage = 10;

@@ -9,6 +9,7 @@ namespace BF
 	public:
 		Player(const char* filename);
 		Player() = delete;
+		Player(Player&& other) noexcept;
 		Player& operator= (const Player&) = default;
 		~Player();
 

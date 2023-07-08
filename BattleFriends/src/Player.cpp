@@ -8,6 +8,12 @@ BF::Player::Player(const char* filename)
 	std::cout << "Created Player" << std::endl;
 }
 
+BF::Player::Player(Player&& other) noexcept
+	:Entity(std::move(other))
+{
+	std::cout << "Copied Player" << std::endl;
+}
+
 BF::Player::~Player()
 {
 	std::cout << "Destroyed Player" << std::endl;
