@@ -38,6 +38,7 @@ int main()
 	fpsCounter.setFont(font);
 	fpsCounter.setString("Hello world");
 	sf::Clock clock;
+	int frames = 0;
 	#endif // SHOW_FPS
 
 
@@ -60,12 +61,16 @@ int main()
 
 		#ifdef SHOW_FPS
 		window.draw(fpsCounter);
-		fpsCounter.setString(std::to_string(1.f / clock.restart().asSeconds()));
+		frames++;
+		if (frames == 100)
+		{
+			fpsCounter.setString(std::to_string(100.f / clock.restart().asSeconds()));
+			frames = 0;
+		}
 		#endif // SHOW_FPS
 		
 		window.display();
 	}
-
 
 	BF::clear();
 	return 0;
