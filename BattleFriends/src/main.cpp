@@ -1,7 +1,6 @@
 #include <pch.h>
 #include <BF.h>
 
-#define SHOW_FPS
 
 
 int main()
@@ -10,26 +9,7 @@ int main()
 	window.setFramerateLimit(120);
 
 	BF::init();
-	srand(time(NULL));
-
-	BF::players.emplace_back("resources/logo.png");
-	for (int i = 0; i < ENTITY_NUM; i++)
-	{
-		BF::entities.emplace_back("resources/logo.png");
-		if (i < 4)
-		{
-			BF::entities[i].move((i + 2) * 220.f, 100.f);
-			BF::entities[i].setSpeed(((rand() % 11) - 5) / 20.0f, (rand() % 11) / 10.0f);
-		}
-		else
-		{
-			BF::entities[i].move((i - 3) * 210.f, 600.f);
-			BF::entities[i].setSpeed(((rand() % 11) - 5) / 20.0f, ((rand() % 11) - 10) / 10.0f);
-		}
-	}
-	BF::entities[1].stationary = true;
-	BF::entities[4].stationary = true;
-
+	BF::spawn_random_ent();
 
 	#ifdef SHOW_FPS
 	sf::Font font;
@@ -39,6 +19,12 @@ int main()
 	fpsCounter.setString("Hello world");
 	sf::Clock clock;
 	int frames = 0;
+	sf::Text Entities_count;
+	Entities_count.setFont(font);
+	Entities_count.move(0.f, 100.f);
+	sf::Text Projectiles_count;
+	Projectiles_count.setFont(font);
+	Projectiles_count.move(0.f, 200.f);	
 	#endif // SHOW_FPS
 
 
@@ -53,19 +39,20 @@ int main()
 
 		window.clear(sf::Color(20, 21, 26, 100));
 		
-		BF::update();  //update entities
-		BF::checkCollisions();
-
-		BF::draw_world(window);
-		BF::draw_minimap(window);
+		BF::update();
+		BF::draw(window);
 
 		#ifdef SHOW_FPS
 		window.draw(fpsCounter);
+		window.draw(Entities_count);
+		window.draw(Projectiles_count);
 		frames++;
 		if (frames == 100)
 		{
 			fpsCounter.setString(std::to_string(100.f / clock.restart().asSeconds()));
 			frames = 0;
+			Entities_count.setString("Entities: " + std::to_string(BF::get_Entity_count()));
+			Projectiles_count.setString("Projectiles: " + std::to_string(BF::get_Projectile_count()));
 		}
 		#endif // SHOW_FPS
 		

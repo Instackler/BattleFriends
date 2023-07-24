@@ -1,5 +1,6 @@
 #include <pch.h>
 #include <Player.h>
+#include <BF.h>
 
 
 BF::Player::Player(const char* filename)
@@ -21,13 +22,14 @@ BF::Player::~Player()
 
 void BF::Player::update()
 {
-	setSpeed(0.f, 0.f);
 	checkInput();
 	Entity::update();
 }
 
 void BF::Player::checkInput()
 {
+	setSpeed(0.f, 0.f);
+
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
 		m_SpeedY -= 1.f;
@@ -53,5 +55,14 @@ void BF::Player::checkInput()
 
 void BF::Player::shoot()
 {
-
+	if (counter == 0)
+	{
+		counter = cooldown;
+		sf::Vector2f player_pos = this->getPosition();
+		sf::Vector2i mouse_pos = sf::Mouse::getPosition();
+		auto diff = sf::Vector2f { mouse_pos.x - player_pos.x, mouse_pos.y - player_pos.y };
+		float length = std::hypot(diff.x, diff.y);
+		BF::projectiles.emplace_back(player_pos, sf::Vector2f {diff.x / length, diff.y / length} );
+	}
+	counter--;
 }

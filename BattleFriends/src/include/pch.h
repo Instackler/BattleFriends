@@ -5,5 +5,4 @@
 #include <Windows.h>
 
 #include <SFML/Graphics.hpp>
-#include <resource.h>
-#include <BFconstants.h>
+#include <resource.h>S

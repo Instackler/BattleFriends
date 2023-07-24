@@ -7,9 +7,12 @@ namespace BF
 	public:
 		Entity(const char* filename);
 		Entity() = delete;
+		Entity(Entity&) = delete;
 		~Entity();
 		Entity(Entity&& other) noexcept;
-		Entity& operator= (const Entity&) = default;
+		Entity& operator= (const Entity&);
+		Entity& operator=(const Entity&&) noexcept;
+
 		void setSpeed(float x, float y);
 		virtual void update();
 		virtual void collide(Entity& other);
@@ -17,10 +20,9 @@ namespace BF
 		friend void checkCollisions();
 		friend void drawEntities(sf::RenderTarget& target);
 		friend class Projectile;
-
+		bool is_dead();
 
 	private:
-		static int s_num;
 		float radius = 1.f;
 		
 	protected:

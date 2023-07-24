@@ -2,8 +2,6 @@
 #include <Entity.h>
 
 
-int BF::Entity::s_num = 0;
-
 BF::Entity::Entity(const char* filename)
 {
 	m_Texture.loadFromFile(filename);
@@ -17,15 +15,57 @@ BF::Entity::Entity(const char* filename)
 	std::cout << "Created Entity" << std::endl;
 }
 
+/*
+BF::Entity::Entity()
+{
+	std::cout << "Created default Entity" << std::endl;
+	m_Texture.loadFromFile("resources/logo.png");
+	setTexture(m_Texture);
+}
+*/
+
 BF::Entity::~Entity()
 {
 	std::cout << "Destroyed Entity" << std::endl;
 }
 
+
 BF::Entity::Entity(Entity&& other) noexcept
+	:sf::Sprite(std::move(other))
 {
+	std::cout << "Entity moved\n";
 	m_Texture = other.m_Texture;
-	std::cout << "Copied Entity" << std::endl;
+	setTexture(m_Texture);
+}
+
+BF::Entity& BF::Entity::operator=(const Entity& other)
+{
+	std::cout << "Entity& =\n";
+	if (this != &other)
+	{
+		radius = other.radius;
+		m_Texture = other.m_Texture;
+		setTexture(m_Texture);
+		setPosition(other.getPosition());
+		setSpeed(other.m_SpeedX, other.m_SpeedY);
+		health = other.health;
+	}
+	return *this;
+}
+
+BF::Entity& BF::Entity::operator=(const Entity&& other) noexcept
+{
+	std::cout << "Entity&& =\n";
+	if (this != &other)
+	{
+		radius = other.radius;
+		m_Texture = other.m_Texture;
+		setTexture(m_Texture);
+		setPosition(other.getPosition());
+		setSpeed(other.m_SpeedX, other.m_SpeedY);
+		health = other.health;
+	}
+	return *this;
 }
 
 void BF::Entity::setSpeed(float x, float y)
@@ -47,12 +87,17 @@ bool BF::Entity::intersects(const Entity& other)
 	float other_x = other.getPosition().x;
 	float other_y = other.getPosition().y;
 
-	if (hypotf(fabsf(x - other_x), fabsf(y - other_y)) < radius + other.radius)
+	if (std::hypot(fabsf(x - other_x), fabsf(y - other_y)) < radius + other.radius)
 	{
 		return true;
 	}
 
 	return false;
+}
+
+bool BF::Entity::is_dead()
+{
+	return health > 0 ? false : true;
 }
 
 /*
