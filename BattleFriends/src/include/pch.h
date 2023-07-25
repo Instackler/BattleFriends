@@ -5,4 +5,4 @@
 #include <Windows.h>
 
 #include <SFML/Graphics.hpp>
-#include <resource.h>S
+#include <resource.h>
