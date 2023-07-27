@@ -1,7 +1,6 @@
 #pragma once
 #include <Entity.h>
 
-
 namespace BF 
 {
 	class Player : public Entity

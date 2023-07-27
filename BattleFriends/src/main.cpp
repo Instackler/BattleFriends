@@ -8,7 +8,7 @@ int main()
 	sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "BattleFriends", sf::Style::Fullscreen);
 	window.setFramerateLimit(120);
 
-	BF::init();
+	BF::init(&window);
 	BF::spawn_random_ent();
 
 	#ifdef SHOW_FPS
@@ -27,20 +27,23 @@ int main()
 	Projectiles_count.move(0.f, 200.f);	
 	#endif // SHOW_FPS
 
-
 	while (window.isOpen())
 	{
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
 			if (event.type == sf::Event::Closed || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape))
+			{
 				window.close();
+				BF::clear();
+				return 0;
+			}
 		}
 
 		window.clear(sf::Color(20, 21, 26, 100));
 		
 		BF::update();
-		BF::draw(window);
+		BF::draw();
 
 		#ifdef SHOW_FPS
 		window.draw(fpsCounter);

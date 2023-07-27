@@ -58,11 +58,14 @@ void BF::Player::shoot()
 	if (counter == 0)
 	{
 		counter = cooldown;
-		sf::Vector2f player_pos = this->getPosition();
-		sf::Vector2i mouse_pos = sf::Mouse::getPosition();
-		auto diff = sf::Vector2f { mouse_pos.x - player_pos.x, mouse_pos.y - player_pos.y };
-		float length = std::hypot(diff.x, diff.y);
-		BF::projectiles.emplace_back(player_pos, sf::Vector2f {diff.x / length, diff.y / length} );
+		sf::Vector2f player_pos = getPosition();
+		sf::Vector2i mouse_pos_sf = sf::Mouse::getPosition();
+		sf::Vector2i mouse_pos;
+		mouse_pos.x = mouse_pos_sf.x - screen_params.width / 2;
+		mouse_pos.y = mouse_pos_sf.y - screen_params.height / 2;
+		float length = std::hypot(mouse_pos.x, mouse_pos.y);
+		sf::Vector2f speed = { mouse_pos.x / length, mouse_pos.y / length };
+		projectiles.emplace_back(player_pos + speed * radius * 1.1f, speed);
 	}
 	counter--;
 }

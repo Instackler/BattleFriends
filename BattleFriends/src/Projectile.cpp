@@ -16,6 +16,7 @@ BF::Projectile::Projectile(Projectile&& other) noexcept
 	:Entity(std::move(other))
 {
 	std::cout << "Projectile moved\n";
+	damage = other.damage;
 }
 
 BF::Projectile& BF::Projectile::operator=(const Projectile&& other) noexcept

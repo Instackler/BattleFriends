@@ -36,6 +36,11 @@ BF::Entity::Entity(Entity&& other) noexcept
 	std::cout << "Entity moved\n";
 	m_Texture = other.m_Texture;
 	setTexture(m_Texture);
+	radius = other.radius;
+	setPosition(other.getPosition());
+	setSpeed(other.m_SpeedX, other.m_SpeedY);
+	health = other.health;
+	stationary = other.stationary;
 }
 
 BF::Entity& BF::Entity::operator=(const Entity& other)
@@ -49,6 +54,7 @@ BF::Entity& BF::Entity::operator=(const Entity& other)
 		setPosition(other.getPosition());
 		setSpeed(other.m_SpeedX, other.m_SpeedY);
 		health = other.health;
+		stationary = other.stationary;
 	}
 	return *this;
 }
@@ -64,6 +70,7 @@ BF::Entity& BF::Entity::operator=(const Entity&& other) noexcept
 		setPosition(other.getPosition());
 		setSpeed(other.m_SpeedX, other.m_SpeedY);
 		health = other.health;
+		stationary = other.stationary;
 	}
 	return *this;
 }

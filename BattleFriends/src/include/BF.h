@@ -7,24 +7,26 @@
 
 #define SHOW_FPS
 
-
+	
 namespace BF
 {
+	extern sf::RenderTarget* default_target;
 	extern std::vector<BF::Entity> entities;
 	extern std::vector<BF::Player> players;
 	extern std::vector<BF::Projectile> projectiles;
+	extern sf::VideoMode screen_params;
 
 	void updateEntities();
 	void updatePlayers();
 	void updateProjectiles();
 
-	void drawEntities(sf::RenderTarget& target);
-	void drawPlayers(sf::RenderTarget& target);
-	void drawProjectiles(sf::RenderTarget& target);
+	void drawEntities(sf::RenderTarget& target = *default_target);
+	void drawPlayers(sf::RenderTarget& target = *default_target);
+	void drawProjectiles(sf::RenderTarget& target = *default_target);
 
-	void init();
+	void init(sf::RenderTarget* target);
 	void update();
-	void draw(sf::RenderTarget& target);
+	void draw(sf::RenderTarget& target = *default_target);
 	
 	void clear();
 

@@ -22,10 +22,8 @@ namespace BF
 		friend class Projectile;
 		bool is_dead();
 
-	private:
-		float radius = 1.f;
-		
 	protected:
+		float radius = 1.f;
 		sf::Texture m_Texture;
 		float m_SpeedX = 0.f, m_SpeedY = 0.f;
 		int health = 100;
