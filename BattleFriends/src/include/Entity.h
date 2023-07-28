@@ -1,4 +1,5 @@
 #pragma once
+#include <BFconstants.h>
 
 namespace BF
 {
@@ -21,6 +22,7 @@ namespace BF
 		friend void drawEntities(sf::RenderTarget& target);
 		friend class Projectile;
 		bool is_dead();
+		bool out_of_bounds(sf::FloatRect area = sf::FloatRect{0.f, 0.f, (float)MAP_WIDTH, (float)MAP_HEIGHT});
 
 	protected:
 		float radius = 1.f;

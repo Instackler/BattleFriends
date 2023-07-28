@@ -19,7 +19,7 @@ namespace BF
 		void shoot();
 
 	private:
-		unsigned int cooldown = 10;
-		unsigned int counter = 10;
+		unsigned int cooldown = 20;
+		unsigned int counter = 20;
 	};
 }

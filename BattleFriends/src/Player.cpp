@@ -32,19 +32,19 @@ void BF::Player::checkInput()
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
-		m_SpeedY -= 1.f;
+		m_SpeedY -= 2.f;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 	{
-		m_SpeedX -= 1.f;
+		m_SpeedX -= 2.f;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 	{
-		m_SpeedY += 1.f;
+		m_SpeedY += 2.f;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
-		m_SpeedX += 1.f;
+		m_SpeedX += 2.f;
 	}
 
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
@@ -65,7 +65,7 @@ void BF::Player::shoot()
 		mouse_pos.y = mouse_pos_sf.y - screen_params.height / 2;
 		float length = std::hypot(mouse_pos.x, mouse_pos.y);
 		sf::Vector2f speed = { mouse_pos.x / length, mouse_pos.y / length };
-		projectiles.emplace_back(player_pos + speed * radius * 1.1f, speed);
+		projectiles.emplace_back(player_pos + speed * radius * 1.1f, speed * 0.8f);
 	}
 	counter--;
 }

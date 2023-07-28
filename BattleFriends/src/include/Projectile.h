@@ -15,6 +15,6 @@ namespace BF
 		void collide(Entity& other) override;
 
 	private:
-		int damage = 10;
+		int damage = 20;
 	};
 }

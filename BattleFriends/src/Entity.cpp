@@ -83,7 +83,14 @@ void BF::Entity::setSpeed(float x, float y)
 
 void BF::Entity::update()
 {
-	move(m_SpeedX, m_SpeedY);
+	if (stationary)
+	{
+		setSpeed(0.f, 0.f);
+	}
+	else
+	{
+		move(m_SpeedX, m_SpeedY);
+	}
 }
 
 bool BF::Entity::intersects(const Entity& other)
@@ -105,6 +112,12 @@ bool BF::Entity::intersects(const Entity& other)
 bool BF::Entity::is_dead()
 {
 	return health > 0 ? false : true;
+}
+
+bool BF::Entity::out_of_bounds(sf::FloatRect area)
+{
+	sf::Vector2f pos = getPosition();
+	return !area.contains(pos.x + radius / 2, pos.y + radius / 2);
 }
 
 /*
@@ -142,7 +155,8 @@ void BF::Entity::collide(Entity& other)
 	float d = hypotf(dx, dy);
 	float nvx = (other.m_SpeedX - this->m_SpeedX) * dx / d;
 	float nvy = (other.m_SpeedY - this->m_SpeedY) * dy / d;
-	if (d < this->radius + other.radius && nvx + nvy < 0) {
+	if (d < this->radius + other.radius && nvx + nvy < 0)
+	{
 		float impulse = nvx + nvy;
 		this->m_SpeedX += impulse * dx / d;
 		this->m_SpeedY += impulse * dy / d;
@@ -151,7 +165,19 @@ void BF::Entity::collide(Entity& other)
 		float penetration = this->radius + other.radius - d;
 		float penX = penetration * dx / d;
 		float penY = penetration * dy / d;
-		this->move(penX * -0.5f, penY * -0.5f);
-		other.move(penX * 0.5f, penY * 0.5f);
+
+		if (this->stationary)
+		{
+			other.move(penX, penY);
+		}
+		else if (other.stationary)
+		{
+			this->move(-penX, -penY);
+		}
+		else
+		{
+			this->move(penX * -0.5f, penY * -0.5f);
+			other.move(penX * 0.5f, penY * 0.5f);
+		}
 	}
 }

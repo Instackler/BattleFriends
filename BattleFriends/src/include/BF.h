@@ -10,10 +10,10 @@
 	
 namespace BF
 {
+	extern std::vector<Entity> entities;
+	extern std::vector<Player> players;
+	extern std::vector<Projectile> projectiles;
 	extern sf::RenderTarget* default_target;
-	extern std::vector<BF::Entity> entities;
-	extern std::vector<BF::Player> players;
-	extern std::vector<BF::Projectile> projectiles;
 	extern sf::VideoMode screen_params;
 
 	void updateEntities();
