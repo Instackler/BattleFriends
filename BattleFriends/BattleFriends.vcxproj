@@ -236,6 +236,9 @@
     <_EmbedManagedResourceFile Include="resources\logo.png" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="bedrock.png" />
+    <Image Include="logo.png" />
+    <Image Include="proj.png" />
     <Image Include="resources\bedrock.png" />
     <Image Include="resources\proj.png" />
   </ItemGroup>

@@ -10,6 +10,7 @@ sf::VideoMode BF::screen_params;
 sf::View player_view;
 sf::View default_view;
 sf::Sprite background;
+std::map<int, sf::Texture> textures;
 
 #ifdef _DEBUG
 sf::Texture& get_background_texture()    //I have to use this because sf::Texture doesn't support global initialization in debug mode
@@ -36,6 +37,11 @@ void BF::updatePlayers()
 	{
 		player.update();
 	}
+}
+
+void BF::loadTextures()
+{
+	textures.emplace(,);
 }
 
 void BF::updateProjectiles()

@@ -13,7 +13,7 @@ int main()
 
 	#ifdef SHOW_FPS
 	sf::Font font;
-	BF::loadResource(IDR_TTF1, "TTF", font);
+	BF::loadResource(Raleway_Semibold, "TTF", font);
 	sf::Text fpsCounter;
 	fpsCounter.setFont(font);
 	fpsCounter.setString("Hello world");

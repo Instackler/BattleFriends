@@ -16,9 +16,13 @@ namespace BF
 	extern sf::RenderTarget* default_target;
 	extern sf::VideoMode screen_params;
 
+	void loadTextures();
+
 	void updateEntities();
 	void updatePlayers();
 	void updateProjectiles();
+	void checkCollisions();
+	void checkHits();
 
 	void drawEntities(sf::RenderTarget& target = *default_target);
 	void drawPlayers(sf::RenderTarget& target = *default_target);
@@ -27,11 +31,7 @@ namespace BF
 	void init(sf::RenderTarget* target);
 	void update();
 	void draw(sf::RenderTarget& target = *default_target);
-	
 	void clear();
-
-	void checkCollisions();
-	void checkHits();
 
 	void spawn_random_ent();
 

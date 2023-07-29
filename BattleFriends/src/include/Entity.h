@@ -7,7 +7,8 @@ namespace BF
 	{
 	public:
 		Entity(const char* filename);
-		Entity();
+		Entity(int textureID);
+		Entity() = delete;
 		Entity(Entity&) = delete;
 		~Entity();
 		Entity(Entity&& other) noexcept;

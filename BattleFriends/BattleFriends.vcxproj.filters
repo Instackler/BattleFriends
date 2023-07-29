@@ -87,6 +87,15 @@
     <Image Include="resources\bedrock.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="logo.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="proj.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="bedrock.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Font Include="resources\fonts\raleway\Raleway-Bold.ttf">
