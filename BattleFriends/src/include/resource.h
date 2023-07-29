@@ -2,9 +2,6 @@
 // Microsoft Visual C++ generated include file.
 // Used by C:\dev\BattleFriends\BattleFriends\resources\BattleFriends.rc
 //
-#define IDB_PNG1                        101
-#define IDB_PNG2                        102
-#define IDB_PNG3                        104
 #define IDR_TTF1                        106
 
 // Next default values for new objects
@@ -14,6 +11,6 @@
 #define _APS_NEXT_RESOURCE_VALUE        107
 #define _APS_NEXT_COMMAND_VALUE         40001
 #define _APS_NEXT_CONTROL_VALUE         1000
-#define _APS_NEXT_SYMED_VALUE           101
+#define _APS_NEXT_SYMED_VALUE           103
 #endif
 #endif
