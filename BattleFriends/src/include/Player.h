@@ -6,7 +6,8 @@ namespace BF
 	class Player : public Entity
 	{
 	public:
-		Player(const char* filename);
+		//Player(const char* filename);
+		Player(int textureID);
 		Player() = delete;
 		Player(Player&& other) noexcept;
 		Player& operator= (const Player&) = default;

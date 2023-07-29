@@ -10,7 +10,7 @@ sf::VideoMode BF::screen_params;
 sf::View player_view;
 sf::View default_view;
 sf::Sprite background;
-std::map<int, sf::Texture> textures;
+std::unordered_map<int, sf::Texture> BF::textures;
 
 #ifdef _DEBUG
 sf::Texture& get_background_texture()    //I have to use this because sf::Texture doesn't support global initialization in debug mode
@@ -20,7 +20,7 @@ sf::Texture& get_background_texture()    //I have to use this because sf::Textur
 }
 #define background_texture get_background_texture()
 #else
-static sf::Texture background_texture;
+sf::Texture background_texture;
 #endif // _DEBUG
 
 void BF::updateEntities()
@@ -41,7 +41,15 @@ void BF::updatePlayers()
 
 void BF::loadTextures()
 {
-	textures.emplace(,);
+	sf::Texture tex;
+	EnumResourceNamesA(NULL, "PNG",
+		[](HMODULE hModule, LPCTSTR lpType, LPTSTR lpName, LONG_PTR lParam) -> BOOL
+		{
+			BF::loadResource((int)lpName, lpType, *((sf::Texture*)lParam));
+			textures.emplace((int)lpName, *((sf::Texture*)lParam));
+			return true; // Continue enumeration
+		},
+		(LONG_PTR)&tex);
 }
 
 void BF::updateProjectiles()
@@ -57,6 +65,8 @@ void BF::init(sf::RenderTarget* target)
 	entities.reserve(100);
 	players.reserve(32);
 	projectiles.reserve(1000);
+
+	loadTextures();
 
 	background_texture.loadFromFile("resources/bedrock.png");
 	background_texture.setRepeated(true);
@@ -80,6 +90,7 @@ void BF::clear()
 	entities.clear();
 	players.clear();
 	projectiles.clear();
+	textures.clear();
 }
 
 void BF::update()
@@ -186,11 +197,11 @@ void BF::checkHits()
 void BF::spawn_random_ent()
 {
 	srand(time(NULL));
-	players.emplace_back("resources/logo.png");
+	players.emplace_back(logo);
 	players[0].move(MAP_WIDTH / 2, MAP_HEIGHT / 2);
 	for (int i = 0; i < ENTITY_NUM; i++)
 	{
-		entities.emplace_back("resources/logo.png");
+		entities.emplace_back(logo);
 		entities[i].setColor(sf::Color{255, 100, 100});
 		entities[i].move(rand() % MAP_WIDTH, rand() % MAP_HEIGHT);
 		if (!(rand() % 10))
