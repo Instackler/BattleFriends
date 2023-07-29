@@ -5,7 +5,7 @@
 
 
 BF::Projectile::Projectile(const sf::Vector2f& pos, const sf::Vector2f& speed)
-	:Entity("resources/proj.png")
+	:Entity(proj)
 {
 	health = 1;
 	setPosition(pos.x, pos.y);

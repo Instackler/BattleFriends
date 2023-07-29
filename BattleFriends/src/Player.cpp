@@ -3,8 +3,16 @@
 #include <BF.h>
 
 
+/*
 BF::Player::Player(const char* filename)
 	:Entity(filename)
+{
+	std::cout << "Created Player" << std::endl;
+}
+*/
+
+BF::Player::Player(int textureID)
+	:Entity(textureID)
 {
 	std::cout << "Created Player" << std::endl;
 }

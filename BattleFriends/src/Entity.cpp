@@ -1,9 +1,9 @@
 #include <pch.h>
 #include <Entity.h>
+#include <BF.h>
 
 
-
-
+/*
 BF::Entity::Entity(const char* filename)
 {
 	m_Texture.loadFromFile(filename);
@@ -16,11 +16,19 @@ BF::Entity::Entity(const char* filename)
 
 	std::cout << "Created Entity" << std::endl;
 }
-
+*/
 
 BF::Entity::Entity(int textureID)
+	:m_textureID(textureID)
 {
+	setTexture(textures[textureID]);
 
+	sf::FloatRect bounding_box = getLocalBounds();
+	setOrigin(bounding_box.width / 2.f, bounding_box.height / 2.f);
+	radius = bounding_box.width < bounding_box.height ?
+		bounding_box.width / 2.f : bounding_box.height / 2.f;
+
+	std::cout << "Created Entity" << std::endl;
 }
 
 BF::Entity::~Entity()
@@ -33,8 +41,8 @@ BF::Entity::Entity(Entity&& other) noexcept
 	:sf::Sprite(std::move(other))
 {
 	std::cout << "Entity moved\n";
-	m_Texture = other.m_Texture;
-	setTexture(m_Texture);
+	m_textureID = other.m_textureID;
+	setTexture(textures[m_textureID]);
 	radius = other.radius;
 	setPosition(other.getPosition());
 	setSpeed(other.m_SpeedX, other.m_SpeedY);
@@ -48,8 +56,8 @@ BF::Entity& BF::Entity::operator=(const Entity& other)
 	if (this != &other)
 	{
 		radius = other.radius;
-		m_Texture = other.m_Texture;
-		setTexture(m_Texture);
+		m_textureID = other.m_textureID;
+		setTexture(textures[m_textureID]);
 		setPosition(other.getPosition());
 		setSpeed(other.m_SpeedX, other.m_SpeedY);
 		health = other.health;
@@ -64,8 +72,8 @@ BF::Entity& BF::Entity::operator=(const Entity&& other) noexcept
 	if (this != &other)
 	{
 		radius = other.radius;
-		m_Texture = other.m_Texture;
-		setTexture(m_Texture);
+		m_textureID = other.m_textureID;
+		setTexture(textures[m_textureID]);
 		setPosition(other.getPosition());
 		setSpeed(other.m_SpeedX, other.m_SpeedY);
 		health = other.health;

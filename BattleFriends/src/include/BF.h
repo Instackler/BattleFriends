@@ -15,6 +15,7 @@ namespace BF
 	extern std::vector<Projectile> projectiles;
 	extern sf::RenderTarget* default_target;
 	extern sf::VideoMode screen_params;
+	extern std::unordered_map<int, sf::Texture> textures;
 
 	void loadTextures();
 

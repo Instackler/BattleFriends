@@ -5,7 +5,7 @@ namespace BF
 	template<typename SFML_type>
 	bool loadResource(int name, const char* type, SFML_type &obj)
 	{
-		HRSRC hResource = FindResourceA(NULL, MAKEINTRESOURCE(name), TEXT(type));
+		HRSRC hResource = FindResourceA(NULL, (LPCSTR)name, type);
 		if (hResource != NULL)
 		{
 			DWORD resourceSize = SizeofResource(NULL, hResource);

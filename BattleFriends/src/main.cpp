@@ -6,7 +6,7 @@
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "BattleFriends", sf::Style::Fullscreen);
-	window.setFramerateLimit(240);
+	//window.setFramerateLimit(240);
 
 	BF::init(&window);
 	BF::spawn_random_ent();
@@ -32,6 +32,7 @@ int main()
 	Esc_hint.setString("Press Esc to exit");
 	#endif // SHOW_FPS
 
+
 	while (window.isOpen())
 	{
 		sf::Event event;
@@ -55,6 +56,7 @@ int main()
 		window.draw(Entities_count);
 		window.draw(Projectiles_count);
 		window.draw(Esc_hint);
+
 		frames++;
 		if (frames == 10)
 		{
