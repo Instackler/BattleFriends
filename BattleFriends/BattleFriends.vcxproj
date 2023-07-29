@@ -235,8 +235,6 @@
     <_EmbedManagedResourceFile Include="resources\logo.png" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="bedrock.png" />
-    <Image Include="proj.png" />
     <Image Include="resources\bedrock.png" />
     <Image Include="resources\proj.png" />
   </ItemGroup>
@@ -246,7 +244,12 @@
     <Font Include="resources\fonts\raleway\Raleway-SemiBold.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="resources\BattleFriends.rc" />
+    <ResourceCompile Include="resources\BattleFriends.rc">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
