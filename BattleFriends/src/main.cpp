@@ -13,7 +13,6 @@ int main()
 
 	#ifdef SHOW_FPS
 	sf::Font font;
-	//font.loadFromFile("resources/fonts/raleway/Raleway-SemiBold.ttf");
 	BF::loadResource(IDR_TTF1, "TTF", font);
 	sf::Text fpsCounter;
 	fpsCounter.setFont(font);

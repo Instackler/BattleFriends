@@ -71,6 +71,9 @@
     <ClInclude Include="src\include\resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\include\loadResource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <_EmbedManagedResourceFile Include="resources\logo.png">
@@ -100,10 +103,5 @@
     <ResourceCompile Include="resources\BattleFriends.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="resources\ttf1.bin">
-      <Filter>Resource Files</Filter>
-    </None>
   </ItemGroup>
 </Project>

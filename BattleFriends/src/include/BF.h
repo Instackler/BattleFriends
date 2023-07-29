@@ -1,5 +1,5 @@
 #pragma once
-#include <loadTexture.h>
+#include <loadResource.h>
 #include <Entity.h>
 #include <Player.h>
 #include <Projectile.h>
