@@ -44,9 +44,6 @@
     <ClInclude Include="src\include\BF.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\include\resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\include\loadTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -68,6 +65,9 @@
     <ClInclude Include="src\include\minimap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\include\resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <_EmbedManagedResourceFile Include="resources\logo.png">
@@ -83,5 +83,16 @@
     <Image Include="resources\proj.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="resources\bedrock.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="resources\fonts\raleway\Raleway-SemiBold.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ttf1.bin">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

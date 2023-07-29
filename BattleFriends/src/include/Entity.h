@@ -7,7 +7,7 @@ namespace BF
 	{
 	public:
 		Entity(const char* filename);
-		Entity() = delete;
+		Entity();
 		Entity(Entity&) = delete;
 		~Entity();
 		Entity(Entity&& other) noexcept;

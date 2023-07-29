@@ -15,6 +15,21 @@ BF::Entity::Entity(const char* filename)
 	std::cout << "Created Entity" << std::endl;
 }
 
+BF::Entity::Entity()
+{
+	/*
+	m_Texture.loadFromFile(filename);
+	setTexture(m_Texture);
+
+	sf::FloatRect bounding_box = getLocalBounds();
+	setOrigin(bounding_box.width / 2.f, bounding_box.height / 2.f);
+	radius = bounding_box.width < bounding_box.height ?
+		bounding_box.width / 2.f : bounding_box.height / 2.f;
+
+	std::cout << "Created Entity" << std::endl;
+	*/
+}
+
 /*
 BF::Entity::Entity()
 {

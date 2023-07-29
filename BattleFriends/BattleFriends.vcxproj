@@ -72,28 +72,28 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\intermediates</IntDir>
-    <IncludePath>$(ProjectDir)src\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)src\include;$(ProjectDir)resources;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)src\lib;$(LibraryPath)</LibraryPath>
     <SourcePath>$(ProjectDir)src;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\intermediates</IntDir>
-    <IncludePath>$(ProjectDir)src\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)src\include;$(ProjectDir)resources;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)src\lib;$(LibraryPath)</LibraryPath>
     <SourcePath>$(ProjectDir)src;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\intermediates\</IntDir>
-    <IncludePath>$(ProjectDir)src\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)src\include;$(ProjectDir)resources;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)src\lib;$(LibraryPath)</LibraryPath>
     <SourcePath>$(ProjectDir)src;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\intermediates\</IntDir>
-    <IncludePath>$(ProjectDir)src\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)src\include;$(ProjectDir)resources;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)src\lib;$(LibraryPath)</LibraryPath>
     <SourcePath>$(ProjectDir)src;$(SourcePath)</SourcePath>
   </PropertyGroup>
@@ -228,7 +228,6 @@
     <ClInclude Include="src\include\pch.h" />
     <ClInclude Include="src\include\Player.h" />
     <ClInclude Include="src\include\Projectile.h" />
-    <ClInclude Include="src\include\resource.h" />
     <ClInclude Include="src\include\BF.h" />
   </ItemGroup>
   <ItemGroup>
@@ -238,7 +237,14 @@
     <ResourceCompile Include="BattleFriends.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="resources\bedrock.png" />
     <Image Include="resources\proj.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="resources\fonts\raleway\Raleway-SemiBold.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ttf1.bin" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
