@@ -12,17 +12,6 @@ sf::View default_view;
 sf::Sprite background;
 std::unordered_map<int, sf::Texture> BF::textures;
 
-#ifdef _DEBUG
-sf::Texture& get_background_texture()    //I have to use this because sf::Texture doesn't support global initialization in debug mode
-{
-	static sf::Texture texture;
-	return texture;
-}
-#define background_texture get_background_texture()
-#else
-sf::Texture background_texture;
-#endif // _DEBUG
-
 void BF::updateEntities()
 {
 	for (auto&& entity : entities)
@@ -68,11 +57,10 @@ void BF::init(sf::RenderTarget* target)
 
 	loadTextures();
 
-	background_texture.loadFromFile("resources/bedrock.png");
-	background_texture.setRepeated(true);
 	float background_scale = 10.f;
 	background.setTextureRect(sf::IntRect{0, 0, MAP_WIDTH / (int)background_scale, MAP_HEIGHT / (int)background_scale});
-	background.setTexture(background_texture);
+	textures[bedrock].setRepeated(true);
+	background.setTexture(textures[bedrock]);
 	background.setScale(background_scale, background_scale);
 	background.setColor(sf::Color(80, 80, 80, 255));
 

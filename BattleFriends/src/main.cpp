@@ -6,7 +6,7 @@
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "BattleFriends", sf::Style::Fullscreen);
-	//window.setFramerateLimit(240);
+	window.setFramerateLimit(240);
 
 	BF::init(&window);
 	BF::spawn_random_ent();

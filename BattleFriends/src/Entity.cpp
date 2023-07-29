@@ -14,7 +14,7 @@ BF::Entity::Entity(const char* filename)
 	radius = bounding_box.width < bounding_box.height ?
 		bounding_box.width / 2.f : bounding_box.height / 2.f;
 
-	std::cout << "Created Entity" << std::endl;
+	// TODO: add logging		std::cout << "Created Entity" << std::endl;
 }
 */
 
@@ -28,19 +28,19 @@ BF::Entity::Entity(int textureID)
 	radius = bounding_box.width < bounding_box.height ?
 		bounding_box.width / 2.f : bounding_box.height / 2.f;
 
-	std::cout << "Created Entity" << std::endl;
+	// TODO: add logging		std::cout << "Created Entity" << std::endl;
 }
 
 BF::Entity::~Entity()
 {
-	std::cout << "Destroyed Entity" << std::endl;
+	// TODO: add logging		std::cout << "Destroyed Entity" << std::endl;
 }
 
 
 BF::Entity::Entity(Entity&& other) noexcept
 	:sf::Sprite(std::move(other))
 {
-	std::cout << "Entity moved\n";
+	// TODO: add logging		std::cout << "Entity moved\n";
 	m_textureID = other.m_textureID;
 	setTexture(textures[m_textureID]);
 	radius = other.radius;
@@ -52,7 +52,7 @@ BF::Entity::Entity(Entity&& other) noexcept
 
 BF::Entity& BF::Entity::operator=(const Entity& other)
 {
-	std::cout << "Entity& =\n";
+	// TODO: add logging		std::cout << "Entity& =\n";
 	if (this != &other)
 	{
 		radius = other.radius;
@@ -68,7 +68,7 @@ BF::Entity& BF::Entity::operator=(const Entity& other)
 
 BF::Entity& BF::Entity::operator=(const Entity&& other) noexcept
 {
-	std::cout << "Entity&& =\n";
+	// TODO: add logging		std::cout << "Entity&& =\n";
 	if (this != &other)
 	{
 		radius = other.radius;

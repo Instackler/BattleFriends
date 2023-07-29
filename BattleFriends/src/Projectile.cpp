@@ -15,13 +15,13 @@ BF::Projectile::Projectile(const sf::Vector2f& pos, const sf::Vector2f& speed)
 BF::Projectile::Projectile(Projectile&& other) noexcept
 	:Entity(std::move(other))
 {
-	std::cout << "Projectile moved\n";
+	// TODO: add logging		std::cout << "Projectile moved\n";
 	damage = other.damage;
 }
 
 BF::Projectile& BF::Projectile::operator=(const Projectile&& other) noexcept
 {
-	std::cout << "Projectile&& =\n";
+	// TODO: add logging		std::cout << "Projectile&& =\n";
 	if (this != &other)
 	{
 		Entity::operator=((const Entity&&)other);
@@ -32,7 +32,7 @@ BF::Projectile& BF::Projectile::operator=(const Projectile&& other) noexcept
 
 BF::Projectile& BF::Projectile::operator=(const Projectile& other)
 {
-	std::cout << "Projectile& =\n";
+	// TODO: add logging		std::cout << "Projectile& =\n";
 	if (this != &other)
 	{
 		Entity::operator=((const Entity&)other);
