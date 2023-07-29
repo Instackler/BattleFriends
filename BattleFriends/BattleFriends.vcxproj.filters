@@ -68,16 +68,14 @@
     <ClInclude Include="src\include\resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\include\resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <_EmbedManagedResourceFile Include="resources\logo.png">
       <Filter>Resource Files</Filter>
     </_EmbedManagedResourceFile>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="BattleFriends.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\proj.png">
@@ -88,11 +86,19 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <Font Include="resources\fonts\raleway\Raleway-SemiBold.ttf" />
+    <Font Include="resources\fonts\raleway\Raleway-Bold.ttf">
+      <Filter>Resource Files</Filter>
+    </Font>
+    <Font Include="resources\fonts\raleway\Raleway-ExtraBold.ttf">
+      <Filter>Resource Files</Filter>
+    </Font>
+    <Font Include="resources\fonts\raleway\Raleway-SemiBold.ttf">
+      <Filter>Resource Files</Filter>
+    </Font>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ttf1.bin">
+    <ResourceCompile Include="resources\BattleFriends.rc">
       <Filter>Resource Files</Filter>
-    </None>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

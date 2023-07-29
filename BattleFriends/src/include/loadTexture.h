@@ -2,5 +2,8 @@
 
 namespace BF
 {
-	sf::Texture loadTexture(int name);
+	//bool loadResource(int name, const char* type, bool (*SFML_load_from_memory)(const void*, size_t));
+
+	template<typename SFML_type>
+	bool loadResource(int name, const char* type, SFML_type obj);
 }

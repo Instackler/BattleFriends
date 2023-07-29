@@ -229,22 +229,22 @@
     <ClInclude Include="src\include\Player.h" />
     <ClInclude Include="src\include\Projectile.h" />
     <ClInclude Include="src\include\BF.h" />
+    <ClInclude Include="src\include\resource.h" />
   </ItemGroup>
   <ItemGroup>
     <_EmbedManagedResourceFile Include="resources\logo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="BattleFriends.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\bedrock.png" />
     <Image Include="resources\proj.png" />
   </ItemGroup>
   <ItemGroup>
+    <Font Include="resources\fonts\raleway\Raleway-Bold.ttf" />
+    <Font Include="resources\fonts\raleway\Raleway-ExtraBold.ttf" />
     <Font Include="resources\fonts\raleway\Raleway-SemiBold.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ttf1.bin" />
+    <ResourceCompile Include="resources\BattleFriends.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
