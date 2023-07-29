@@ -28,8 +28,8 @@ int main()
 	sf::Text Esc_hint;
 	Esc_hint.setFont(font);
 	Esc_hint.setCharacterSize(40);
-	Esc_hint.move(0.f, sf::VideoMode::getDesktopMode().height - 41.f);
-	Esc_hint.setString("Press Esc to exit");
+	Esc_hint.move(0.f, sf::VideoMode::getDesktopMode().height - 141.f);
+	Esc_hint.setString("Move: W, A, S, D\nShoot: LMB\nPress Esc to exit");
 	#endif // SHOW_FPS
 
 
