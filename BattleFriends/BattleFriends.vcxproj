@@ -221,7 +221,6 @@
     <ClCompile Include="src\Projectile.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="resources\resource.h" />
     <ClInclude Include="src\include\BFconstants.h" />
     <ClInclude Include="src\include\Entity.h" />
     <ClInclude Include="src\include\loadTexture.h" />
