@@ -11,6 +11,7 @@ sf::View player_view;
 sf::View default_view;
 sf::Sprite background;
 std::unordered_map<int, sf::Texture> BF::textures;
+std::mutex update_mutex;
 
 void BF::updateEntities()
 {
@@ -83,23 +84,37 @@ void BF::clear()
 
 void BF::update()
 {
+	update_mutex.lock();
 	updateEntities();
 	updatePlayers();
 	updateProjectiles();
 	checkCollisions();
 	checkHits();
+	update_mutex.unlock();
 }
 
 void BF::draw(sf::RenderTarget& target)
 {
-	player_view.setCenter(players.size() > 0 ? players[0].getPosition() : sf::Vector2f{MAP_WIDTH / 2.f, MAP_HEIGHT / 2.f});
-	target.setView(player_view);
-	target.draw(background);
-	drawEntities(target);
-	drawPlayers(target);
-	drawProjectiles(target);
-	target.setView(default_view);
-	minimap::draw(target);
+	while (true)
+	{
+		bool lockAcquired = update_mutex.try_lock();
+		if (lockAcquired)
+		{
+			player_view.setCenter(players.size() > 0 ? players[0].getPosition() : sf::Vector2f{MAP_WIDTH / 2.f, MAP_HEIGHT / 2.f});
+			target.setView(player_view);
+			target.draw(background);
+			drawEntities(target);
+			drawPlayers(target);
+			drawProjectiles(target);
+			target.setView(default_view);
+			minimap::draw(target);
+			
+			update_mutex.unlock();
+			break;
+		}
+		// wait before trying again
+	}
+
 }
 
 void BF::drawEntities(sf::RenderTarget& target)

@@ -15,6 +15,7 @@ namespace BF
 				LPVOID pData = LockResource(hResourceData);
 				obj.loadFromMemory(pData, resourceSize);
 				FreeResource(hResourceData);
+				// TODO: add logging
 				return true;
 			}
 			// TODO: add logging
