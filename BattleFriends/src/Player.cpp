@@ -30,8 +30,15 @@ BF::Player::~Player()
 
 void BF::Player::update()
 {
-	checkInput();
-	Entity::update();
+	if (out_of_bounds())
+	{
+		bounce();
+	}
+	else
+	{
+		checkInput();
+		Entity::update();
+	}
 }
 
 void BF::Player::checkInput()

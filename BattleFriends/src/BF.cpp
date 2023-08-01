@@ -17,6 +17,10 @@ void BF::updateEntities()
 {
 	for (auto&& entity : entities)
 	{
+		if (entity.out_of_bounds())
+		{
+			entity.bounce();
+		}
 		entity.update();
 	}
 }
@@ -84,17 +88,17 @@ void BF::clear()
 
 void BF::update()
 {
-	update_mutex.lock();
+	const std::lock_guard<std::mutex> update_lock(update_mutex);
 	updateEntities();
 	updatePlayers();
 	updateProjectiles();
 	checkCollisions();
 	checkHits();
-	update_mutex.unlock();
 }
 
 void BF::draw(sf::RenderTarget& target)
 {
+	//const std::lock_guard<std::mutex> draw_lock(update_mutex);
 	while (true)
 	{
 		bool lockAcquired = update_mutex.try_lock();
@@ -108,13 +112,12 @@ void BF::draw(sf::RenderTarget& target)
 			drawProjectiles(target);
 			target.setView(default_view);
 			minimap::draw(target);
-			
+
 			update_mutex.unlock();
 			break;
 		}
 		// wait before trying again
 	}
-
 }
 
 void BF::drawEntities(sf::RenderTarget& target)
@@ -167,8 +170,8 @@ void BF::checkCollisions()
 void BF::checkHits()
 {
 	std::erase_if(projectiles, [](BF::Projectile& projectile) { return projectile.out_of_bounds(); });
-	std::erase_if(players, [](BF::Player& player) { return player.out_of_bounds(); });
-	std::erase_if(entities, [](BF::Entity& entity) { return entity.out_of_bounds(); });
+	//std::erase_if(players, [](BF::Player& player) { return player.out_of_bounds(); });
+	//std::erase_if(entities, [](BF::Entity& entity) { return entity.out_of_bounds(); });
 
 	for (auto&& player : players)
 	{

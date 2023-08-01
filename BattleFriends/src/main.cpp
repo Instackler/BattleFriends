@@ -1,21 +1,24 @@
 #include <pch.h>
 #include <BF.h>
 
-std::atomic_bool running;
+std::atomic_flag running;
+std::atomic<sf::Time> physics_time;
 
 void physics_loop()
 {
+	sf::Clock physics_clock;
 	do
 	{
 		BF::update();
-		//sf::sleep(sf::milliseconds(1));
-	} while (running);
+		sf::sleep(sf::milliseconds(1));
+		physics_time.store(physics_clock.restart());
+	} while (running.test());
 }
 
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "BattleFriends", sf::Style::Fullscreen);
-	window.setFramerateLimit(240);
+	window.setFramerateLimit(200);
 
 	BF::init(&window);
 	BF::spawn_random_ent();
@@ -23,17 +26,17 @@ int main()
 	#ifdef SHOW_FPS
 	sf::Font font;
 	BF::loadResource(Raleway_Semibold, "TTF", font);
+
 	sf::Text fpsCounter;
 	fpsCounter.setFont(font);
 	fpsCounter.setString("Hello world");
 	sf::Clock fps_clock;
 	int frames = 0;
-	sf::Text Entities_count;
-	Entities_count.setFont(font);
-	Entities_count.move(0.f, sf::VideoMode::getDesktopMode().height / 20.f * 2.f);
-	sf::Text Projectiles_count;
-	Projectiles_count.setFont(font);
-	Projectiles_count.move(0.f, sf::VideoMode::getDesktopMode().height / 20.f * 3.f);
+
+	sf::Text info;
+	info.setFont(font);
+	info.move(0.f, sf::VideoMode::getDesktopMode().height / 20.f * 0.7f);
+
 	sf::Text Esc_hint;
 	Esc_hint.setFont(font);
 	Esc_hint.setCharacterSize(40);
@@ -42,17 +45,19 @@ int main()
 	#endif // SHOW_FPS
 
 	bool drawn_once = false;
-	running.store(true);
 	std::thread physics_thread(physics_loop);
 	sf::Event event;
+	running.test_and_set();
 
+	sf::Clock frame_time;
+	sf::Time frame_end;
 	while (window.isOpen())
 	{
 		while (window.pollEvent(event))
 		{
 			if (event.type == sf::Event::Closed || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape))
 			{
-				running = false;
+				running.clear();
 				window.close();
 				physics_thread.join();
 				BF::clear();
@@ -67,8 +72,7 @@ int main()
 
 		#ifdef SHOW_FPS
 		window.draw(fpsCounter);
-		window.draw(Entities_count);
-		window.draw(Projectiles_count);
+		window.draw(info);
 		window.draw(Esc_hint);
 
 		frames++;
@@ -76,15 +80,18 @@ int main()
 		{
 			fpsCounter.setString(std::to_string(10.f / fps_clock.restart().asSeconds()));
 			frames = 0;
-			Entities_count.setString("Entities: " + std::to_string(BF::get_Entity_count()));
-			Projectiles_count.setString("Projectiles: " + std::to_string(BF::get_Projectile_count()));
+			info.setString("Frame time: " + std::to_string(frame_end.asMicroseconds()) + "us" + "\n" +
+						   "Physics time: " + std::to_string(physics_time.load().asMicroseconds()) + "us" + "\n" +
+						   "Entities: " + std::to_string(BF::get_Entity_count()) + "\n" +
+						   "Projectiles: " + std::to_string(BF::get_Projectile_count()));
 		}
 		#endif // SHOW_FPS
 		
 		window.display();
+		frame_end = frame_time.restart();
 	}
 
-	running = false;
+	running.clear();
 	physics_thread.join();
 	BF::clear();
 	return 0;

@@ -15,6 +15,7 @@ namespace BF
 		Entity& operator= (const Entity&);
 		Entity& operator=(const Entity&&) noexcept;
 
+		void bounce();
 		void setSpeed(float x, float y);
 		virtual void update();
 		virtual void collide(Entity& other);

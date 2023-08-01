@@ -82,6 +82,13 @@ BF::Entity& BF::Entity::operator=(const Entity&& other) noexcept
 	return *this;
 }
 
+void BF::Entity::bounce()
+{
+	move(-m_SpeedX, -m_SpeedY);
+	m_SpeedX = -m_SpeedX;
+	m_SpeedY = -m_SpeedY;
+}
+
 void BF::Entity::setSpeed(float x, float y)
 {
 	m_SpeedX = x;
