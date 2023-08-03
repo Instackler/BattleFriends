@@ -3,6 +3,12 @@
 
 namespace BF 
 {
+	struct player_inputs
+	{
+		bool up, left, down, right, shoot;
+		sf::Vector2i mouse_pos;
+	};
+
 	class Player : public Entity
 	{
 	public:
@@ -13,10 +19,10 @@ namespace BF
 		Player& operator= (const Player&) = default;
 		~Player();
 
-		void update() override;
+		void update(const player_inputs& inputs);
 
 	private:
-		void checkInput();
+		void applyInputs(const player_inputs& inputs);
 		void shoot();
 
 	private:

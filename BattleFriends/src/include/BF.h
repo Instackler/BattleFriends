@@ -5,17 +5,24 @@
 #include <Projectile.h>
 #include <BFconstants.h>
 
-#define SHOW_FPS
+//#define SHOW_FPS
 
 	
 namespace BF
 {
+	// game state
 	extern std::vector<Entity> entities;
 	extern std::vector<Player> players;
 	extern std::vector<Projectile> projectiles;
+
+	// game inputs
+	extern std::vector<BF::player_inputs> game_inputs;
+
 	extern sf::RenderTarget* default_target;
 	extern sf::VideoMode screen_params;
 	extern std::unordered_map<int, sf::Texture> textures;
+	extern std::atomic_flag running;
+	extern std::atomic<sf::Time> physics_time;
 
 	void loadTextures();
 
@@ -24,14 +31,17 @@ namespace BF
 	void updateProjectiles();
 	void checkCollisions();
 	void checkHits();
+	void checkInputs();
 
 	void drawEntities(sf::RenderTarget& target = *default_target);
 	void drawPlayers(sf::RenderTarget& target = *default_target);
 	void drawProjectiles(sf::RenderTarget& target = *default_target);
 
 	void init(sf::RenderTarget* target);
+	void physics_loop();
 	void update();
 	void draw(sf::RenderTarget& target = *default_target);
+	void draw_debug_hud(sf::RenderTarget& target = *default_target);
 	void clear();
 
 	void spawn_random_ent();
