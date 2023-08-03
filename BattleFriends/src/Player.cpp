@@ -28,34 +28,39 @@ BF::Player::~Player()
 	// TODO: add logging		std::cout << "Destroyed Player" << std::endl;
 }
 
-void BF::Player::update()
+void BF::Player::update(const player_inputs& inputs)
 {
-	checkInput();
-	Entity::update();
+	if (out_of_bounds())
+	{
+		bounce();
+	}
+	else
+	{
+		setSpeed(0.f, 0.f);
+		applyInputs(inputs);
+		Entity::update();
+	}
 }
 
-void BF::Player::checkInput()
+void BF::Player::applyInputs(const player_inputs& inputs)
 {
-	setSpeed(0.f, 0.f);
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+	if (inputs.up)
 	{
 		m_SpeedY -= 2.f;
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	if (inputs.left)
 	{
 		m_SpeedX -= 2.f;
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+	if (inputs.down)
 	{
 		m_SpeedY += 2.f;
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	if (inputs.right)
 	{
 		m_SpeedX += 2.f;
 	}
-
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	if (inputs.shoot)
 	{
 		shoot();
 	}

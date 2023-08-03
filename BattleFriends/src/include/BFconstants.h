@@ -1,6 +1,6 @@
 #pragma once
 
-#define ENTITY_NUM 200
+#define ENTITY_NUM 100
 const int MAP_WIDTH = 8192;
 const int MAP_HEIGHT = 8192;
 const float MINIMAP_SCALE = 0.05f;  // in fraction of map size

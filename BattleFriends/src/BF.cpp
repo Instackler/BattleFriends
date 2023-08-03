@@ -6,25 +6,58 @@ sf::RenderTarget* BF::default_target = nullptr;
 std::vector<BF::Entity> BF::entities;
 std::vector<BF::Player> BF::players;
 std::vector<BF::Projectile> BF::projectiles;
+std::vector<BF::player_inputs> BF::game_inputs;
 sf::VideoMode BF::screen_params;
 sf::View player_view;
 sf::View default_view;
 sf::Sprite background;
 std::unordered_map<int, sf::Texture> BF::textures;
+std::mutex update_mutex;
+std::atomic_flag BF::running;
+std::atomic<sf::Time> BF::physics_time;
+std::thread* physics_thread_ptr;
+
+
+void BF::physics_loop()
+{
+	static sf::Clock physics_clock;
+	do
+	{
+		BF::update();
+		sf::sleep(sf::milliseconds(1));
+		sf::sleep(sf::milliseconds(1));
+		physics_time.store(physics_clock.restart());
+	} while (running.test());
+}
+
+void BF::checkInputs()
+{
+	game_inputs[0].up = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
+	game_inputs[0].left = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
+	game_inputs[0].down = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
+	game_inputs[0].right = sf::Keyboard::isKeyPressed(sf::Keyboard::D);
+	game_inputs[0].shoot = sf::Mouse::isButtonPressed(sf::Mouse::Left);
+	game_inputs[0].mouse_pos = sf::Mouse::getPosition();
+}
 
 void BF::updateEntities()
 {
 	for (auto&& entity : entities)
 	{
+		if (entity.out_of_bounds())
+		{
+			entity.bounce();
+		}
 		entity.update();
 	}
 }
 
 void BF::updatePlayers()
 {
+	int i = 0;
 	for (auto&& player : players)
 	{
-		player.update();
+		player.update(game_inputs[i++]);
 	}
 }
 
@@ -54,15 +87,19 @@ void BF::init(sf::RenderTarget* target)
 	entities.reserve(100);
 	players.reserve(32);
 	projectiles.reserve(1000);
+	game_inputs.reserve(32);
+	game_inputs.emplace_back();
 
-	loadTextures();
+	BF::loadTextures();
 
+	///////////////////////////////////// load the map
 	float background_scale = 10.f;
 	background.setTextureRect(sf::IntRect{0, 0, MAP_WIDTH / (int)background_scale, MAP_HEIGHT / (int)background_scale});
 	textures[bedrock].setRepeated(true);
 	background.setTexture(textures[bedrock]);
 	background.setScale(background_scale, background_scale);
 	background.setColor(sf::Color(80, 80, 80, 255));
+	/////////////////////////////////////////////////////
 
 	screen_params = sf::VideoMode::getDesktopMode();
 	default_target = target;
@@ -71,20 +108,30 @@ void BF::init(sf::RenderTarget* target)
 	player_view.setViewport(sf::FloatRect(0.f, 0.f, 1.f, 1.f));
 
 	minimap::init();
+
+	running.test_and_set();
+	static std::thread physics_thread(BF::physics_loop);
+	physics_thread_ptr = &physics_thread;
 }
 
 void BF::clear()
 {
+	running.clear();
+	physics_thread_ptr->join();
+
 	entities.clear();
 	players.clear();
 	projectiles.clear();
+	game_inputs.clear();
 	textures.clear();
 }
 
 void BF::update()
 {
-	updateEntities();
+	const std::lock_guard<std::mutex> update_lock(update_mutex);
+	BF::checkInputs();
 	updatePlayers();
+	updateEntities();
 	updateProjectiles();
 	checkCollisions();
 	checkHits();
@@ -92,7 +139,9 @@ void BF::update()
 
 void BF::draw(sf::RenderTarget& target)
 {
-	player_view.setCenter(players.size() > 0 ? players[0].getPosition() : sf::Vector2f{MAP_WIDTH / 2.f, MAP_HEIGHT / 2.f});
+	/*
+	const std::lock_guard<std::mutex> draw_lock(update_mutex);
+	player_view.setCenter(players.size() > 0 ? players[0].getPosition() : sf::Vector2f{ MAP_WIDTH / 2.f, MAP_HEIGHT / 2.f });
 	target.setView(player_view);
 	target.draw(background);
 	drawEntities(target);
@@ -100,6 +149,26 @@ void BF::draw(sf::RenderTarget& target)
 	drawProjectiles(target);
 	target.setView(default_view);
 	minimap::draw(target);
+	*/
+
+	while (true)
+	{
+		if (update_mutex.try_lock())
+		{
+			player_view.setCenter(players.size() > 0 ? players[0].getPosition() : sf::Vector2f{MAP_WIDTH / 2.f, MAP_HEIGHT / 2.f});
+			target.setView(player_view);
+			target.draw(background);
+			drawEntities(target);
+			drawPlayers(target);
+			drawProjectiles(target);
+			target.setView(default_view);
+			minimap::draw(target);
+
+			update_mutex.unlock();
+			break;
+		}
+		// wait before trying again
+	}
 }
 
 void BF::drawEntities(sf::RenderTarget& target)
@@ -152,8 +221,8 @@ void BF::checkCollisions()
 void BF::checkHits()
 {
 	std::erase_if(projectiles, [](BF::Projectile& projectile) { return projectile.out_of_bounds(); });
-	std::erase_if(players, [](BF::Player& player) { return player.out_of_bounds(); });
-	std::erase_if(entities, [](BF::Entity& entity) { return entity.out_of_bounds(); });
+	//std::erase_if(players, [](BF::Player& player) { return player.out_of_bounds(); });
+	//std::erase_if(entities, [](BF::Entity& entity) { return entity.out_of_bounds(); });
 
 	for (auto&& player : players)
 	{
@@ -200,6 +269,52 @@ void BF::spawn_random_ent()
 		{
 			entities[i].setSpeed(((rand() % 11) - 5) / 20.0f, (rand() % 11) / 10.0f);
 		}
+	}
+}
+
+void BF::draw_debug_hud(sf::RenderTarget& target)
+{
+	static bool init = true;
+	static int frames = 0;
+	static sf::Font font;
+	static sf::Text fpsCounter;
+	static sf::Text info;
+	static sf::Text Esc_hint;
+	static sf::Time frame_end;
+	static sf::Clock fps_clock;
+
+	if (init)
+	{
+		BF::loadResource(Raleway_Semibold, "TTF", font);
+		fpsCounter.setFont(font);
+		fpsCounter.setString("Initializing...");
+
+		info.setFont(font);
+		info.move(0.f, sf::VideoMode::getDesktopMode().height / 20.f * 0.7f);
+		info.setString("Initializing...");
+
+		Esc_hint.setFont(font);
+		Esc_hint.setCharacterSize(40);
+		Esc_hint.move(0.f, sf::VideoMode::getDesktopMode().height - 141.f);
+		Esc_hint.setString("Move: W, A, S, D\nShoot: LMB\nPress Esc to exit");
+
+		init = false;
+	}
+
+	target.draw(fpsCounter);
+	target.draw(info);
+	target.draw(Esc_hint);
+
+	frames++;
+	if (frames == 10)
+	{
+		frame_end = fps_clock.restart();
+		fpsCounter.setString(std::to_string(10.f / frame_end.asSeconds()));
+		frames = 0;
+		info.setString("Frame time: " + std::to_string(frame_end.asMicroseconds() / 10) + "us" + "\n" +
+			"Physics time: " + std::to_string(physics_time.load().asMicroseconds()) + "us" + "\n" +
+			"Entities: " + std::to_string(BF::get_Entity_count()) + "\n" +
+			"Projectiles: " + std::to_string(BF::get_Projectile_count()));
 	}
 }
 
