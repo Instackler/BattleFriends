@@ -88,7 +88,6 @@ void BF::init(sf::RenderTarget* target)
 	players.reserve(32);
 	projectiles.reserve(1000);
 	game_inputs.reserve(32);
-	game_inputs.emplace_back();
 
 	BF::loadTextures();
 
@@ -197,7 +196,7 @@ void BF::drawProjectiles(sf::RenderTarget& target)
 
 void BF::checkCollisions()
 {
-	for (int i = 0; i < ((int)entities.size() - 1); i++)
+	for (int i = 0; i < (entities.size() - 1); i++)
 	{
 		for (int j = i + 1; j < entities.size() ; j++)   //for each unique pair
 		{
@@ -214,6 +213,15 @@ void BF::checkCollisions()
 			{
 				entity.collide(player);
 			}
+		}
+	}
+
+	for (int i = 0; i < (players.size() - 1); i++)
+	{
+		for (int j = i + 1; j < players.size(); j++)   //for each unique pair
+		{
+			if (players[i].intersects(players[j]))
+				players[i].collide(players[j]);
 		}
 	}
 }
@@ -255,7 +263,9 @@ void BF::spawn_random_ent()
 {
 	srand(time(NULL));
 	players.emplace_back(logo);
-	players[0].move(MAP_WIDTH / 2, MAP_HEIGHT / 2);
+	players.emplace_back(logo);
+	players[0].move(MAP_WIDTH / 2.f, MAP_HEIGHT / 2.f);
+	players[1].move(MAP_WIDTH / 2.f, MAP_HEIGHT / 2.f);
 	for (int i = 0; i < ENTITY_NUM; i++)
 	{
 		entities.emplace_back(logo);
