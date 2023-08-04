@@ -8,3 +8,4 @@
 
 #include <SFML/Graphics.hpp>
 #include <resource.h>
+#include <ggponet.h>
