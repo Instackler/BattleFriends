@@ -24,8 +24,8 @@ void BF::physics_loop()
 	do
 	{
 		BF::update();
-		sf::sleep(sf::milliseconds(1));
-		sf::sleep(sf::milliseconds(1));
+		//sf::sleep(sf::milliseconds(1));
+		//sf::sleep(sf::milliseconds(1));
 		physics_time.store(physics_clock.restart());
 	} while (running.test());
 }
@@ -196,7 +196,7 @@ void BF::drawProjectiles(sf::RenderTarget& target)
 
 void BF::checkCollisions()
 {
-	for (int i = 0; i < (entities.size() - 1); i++)
+	for (int i = 0; i < (int)entities.size() - 1; i++)
 	{
 		for (int j = i + 1; j < entities.size() ; j++)   //for each unique pair
 		{
@@ -216,7 +216,7 @@ void BF::checkCollisions()
 		}
 	}
 
-	for (int i = 0; i < (players.size() - 1); i++)
+	for (int i = 0; i < (int)players.size() - 1; i++)
 	{
 		for (int j = i + 1; j < players.size(); j++)   //for each unique pair
 		{
@@ -326,6 +326,27 @@ void BF::draw_debug_hud(sf::RenderTarget& target)
 			"Entities: " + std::to_string(BF::get_Entity_count()) + "\n" +
 			"Projectiles: " + std::to_string(BF::get_Projectile_count()));
 	}
+}
+
+bool BF::save_game_state(unsigned char** buffer, int* len, int* checksum, int frame)
+{
+	const std::lock_guard<std::mutex> ggpo_lock(update_mutex);
+	int num_entities = entities.size();
+	int num_players = players.size();
+	int num_projectiles = projectiles.size();
+	int entities_offset = num_entities * sizeof(Entity);
+	int players_offset = num_players * sizeof(Player);
+	int projectiles_offset = num_projectiles * sizeof(Projectile);
+
+	*len = 3 * sizeof(int) + entities_offset + players_offset + projectiles_offset;
+	*buffer = (unsigned char*)new char[*len];
+
+	std::memcpy(*buffer, entities.data(), entities_offset);
+	std::memcpy(*buffer + entities_offset, players.data(), num_players);
+	std::memcpy(*buffer + players_offset, projectiles.data(), num_projectiles);
+
+	//std::memcpy(*buffer, std::as_bytes(entities), entities_offset);
+	return true;
 }
 
 size_t BF::get_Entity_count()
