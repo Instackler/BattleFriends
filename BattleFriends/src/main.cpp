@@ -24,6 +24,18 @@ bool vw_on_event_callback(GGPOEvent* info)
 	return true;
 }
 
+class mmap
+{
+private:
+	sf::RenderTexture rt;
+public:
+	static void init();
+};
+
+void mmap::init()
+{
+	//mmap test;
+}
 
 int main()
 {
@@ -32,7 +44,6 @@ int main()
 
 	BF::init(&window);
 	BF::spawn_random_ent();
-
 
 
 	//GGPOSession* ggpo = NULL;

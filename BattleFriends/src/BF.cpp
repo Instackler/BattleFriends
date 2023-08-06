@@ -1,21 +1,24 @@
-#include <pch.h>
+﻿#include <pch.h>
 #include <BF.h>
 #include <minimap.h>
 
-sf::RenderTarget* BF::default_target = nullptr;
+// Game state
 std::vector<BF::Entity> BF::entities;
 std::vector<BF::Player> BF::players;
 std::vector<BF::Projectile> BF::projectiles;
 std::vector<BF::player_inputs> BF::game_inputs;
-sf::VideoMode BF::screen_params;
-sf::View player_view;
+
+
+sf::RenderTarget* BF::default_target = nullptr;
 sf::View default_view;
 sf::Sprite background;
 std::unordered_map<int, sf::Texture> BF::textures;
 std::mutex update_mutex;
+
+// Physics thread vars
 std::atomic_flag BF::running;
 std::atomic<sf::Time> BF::physics_time;
-std::thread* physics_thread_ptr;
+std::thread* physics_thread_ptr = nullptr;
 
 
 void BF::physics_loop()
@@ -100,11 +103,8 @@ void BF::init(sf::RenderTarget* target)
 	background.setColor(sf::Color(80, 80, 80, 255));
 	/////////////////////////////////////////////////////
 
-	screen_params = sf::VideoMode::getDesktopMode();
 	default_target = target;
 	default_view = target->getDefaultView();
-	player_view.setSize(sf::Vector2f(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height));
-	player_view.setViewport(sf::FloatRect(0.f, 0.f, 1.f, 1.f));
 
 	minimap::init();
 
@@ -138,6 +138,8 @@ void BF::update()
 
 void BF::draw(sf::RenderTarget& target)
 {
+	static sf::View player_view({ 0.f, 0.f , 1920, 1080 });
+
 	/*
 	const std::lock_guard<std::mutex> draw_lock(update_mutex);
 	player_view.setCenter(players.size() > 0 ? players[0].getPosition() : sf::Vector2f{ MAP_WIDTH / 2.f, MAP_HEIGHT / 2.f });
