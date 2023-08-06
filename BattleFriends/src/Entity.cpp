@@ -16,6 +16,18 @@ BF::Entity::Entity(int textureID)
 	// TODO: add logging		std::cout << "Created Entity" << std::endl;
 }
 
+BF::Entity::Entity(const Entity& other)
+	:sf::Sprite(other)
+{
+	m_textureID = other.m_textureID;
+	setTexture(textures[m_textureID]);
+	radius = other.radius;
+	setPosition(other.getPosition());
+	setSpeed(other.m_SpeedX, other.m_SpeedY);
+	health = other.health;
+	stationary = other.stationary;
+}
+
 BF::Entity::~Entity()
 {
 	// TODO: add logging		std::cout << "Destroyed Entity" << std::endl;

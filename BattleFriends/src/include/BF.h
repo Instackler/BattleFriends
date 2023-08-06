@@ -45,6 +45,7 @@ namespace BF
 	void clear();
 
 	bool save_game_state(unsigned char** buffer, int* len, int* checksum, int frame);
+	void free_buffer(void* buffer);
 
 	void spawn_random_ent();
 

@@ -8,8 +8,8 @@ namespace BF
 	public:
 		//Entity(const char* filename);
 		Entity(int textureID);
+		Entity(const Entity&);
 		Entity() = delete;
-		Entity(Entity&) = delete;
 		~Entity();
 		Entity(Entity&& other) noexcept;
 		Entity& operator= (const Entity&);
