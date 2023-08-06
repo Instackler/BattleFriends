@@ -19,6 +19,7 @@ namespace BF
 
 	// game loop functions
 	void init(sf::RenderTarget* target);
+	void process_event(sf::Event& event, sf::RenderWindow& window);
 	void update();
 	void draw(sf::RenderTarget& target = *default_target);
 	void draw_debug_hud(sf::RenderTarget& target = *default_target);

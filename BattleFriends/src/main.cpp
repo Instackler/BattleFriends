@@ -2,45 +2,13 @@
 #include <BF.h>
 #include <vector>
 
-bool vw_advance_frame_callback(int flags)
-{
-	return true;
-}
-
-bool vw_load_game_state_callback(unsigned char* buffer, int len)
-{
-	return true;
-}
-
-bool vw_save_game_state_callback(unsigned char** buffer, int* len, int* checksum, int frame)
-{
-	return true;
-}
-
-void vw_free_buffer(void* buffer) {}
-
-bool vw_on_event_callback(GGPOEvent* info)
-{
-	return true;
-}
-
-class mmap
-{
-private:
-	sf::RenderTexture rt;
-public:
-	static void init();
-};
-
-void mmap::init()
-{
-	//mmap test;
-}
 
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "BattleFriends", sf::Style::Fullscreen);
-	//window.setFramerateLimit(170);
+	SetForegroundWindow(window.getSystemHandle());
+	window.setFramerateLimit(170);
+
 
 	BF::init(&window);
 	BF::spawn_random_ent();
@@ -72,12 +40,7 @@ int main()
 	{
 		while (window.pollEvent(event))
 		{
-			if (event.type == sf::Event::Closed || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape))
-			{
-				window.close();
-				BF::clear();
-				return 0;
-			}
+			BF::process_event(event, window);
 		}
 
 		window.clear(sf::Color(20, 21, 26, 100));

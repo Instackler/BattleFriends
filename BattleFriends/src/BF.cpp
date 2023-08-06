@@ -12,6 +12,7 @@ std::vector<BF::player_inputs> BF::game_inputs;
 sf::RenderTarget* BF::default_target = nullptr;
 sf::Sprite background;
 std::unordered_map<int, sf::Texture> BF::textures;
+std::atomic_flag has_focus;
 
 // Physics thread vars
 std::atomic_flag running;
@@ -32,14 +33,41 @@ void BF::physics_loop()
 	} while (running.test());
 }
 
+void BF::process_event(sf::Event& event, sf::RenderWindow& window)
+{
+	if (event.type == sf::Event::Closed || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape))
+	{
+		window.close();
+	}
+	if (event.type == sf::Event::LostFocus)
+	{
+		has_focus.clear();
+	}
+	if (event.type == sf::Event::GainedFocus)
+	{
+		has_focus.test_and_set();
+	}
+}
+
 void BF::checkInputs()
 {
-	game_inputs[0].up = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
-	game_inputs[0].left = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
-	game_inputs[0].down = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
-	game_inputs[0].right = sf::Keyboard::isKeyPressed(sf::Keyboard::D);
-	game_inputs[0].shoot = sf::Mouse::isButtonPressed(sf::Mouse::Left);
-	game_inputs[0].mouse_pos = sf::Mouse::getPosition();
+	if (has_focus.test())
+	{
+		game_inputs[0].up = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
+		game_inputs[0].left = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
+		game_inputs[0].down = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
+		game_inputs[0].right = sf::Keyboard::isKeyPressed(sf::Keyboard::D);
+		game_inputs[0].shoot = sf::Mouse::isButtonPressed(sf::Mouse::Left);
+		game_inputs[0].mouse_pos = sf::Mouse::getPosition();
+	}
+	else
+	{
+		game_inputs[0].up = false;
+		game_inputs[0].left = false;
+		game_inputs[0].down = false;
+		game_inputs[0].right = false;
+		game_inputs[0].shoot = false;
+	}
 }
 
 void BF::updateEntities()
@@ -109,6 +137,7 @@ void BF::init(sf::RenderTarget* target)
 	running.test_and_set();
 	static std::thread physics_thread(BF::physics_loop);
 	physics_thread_ptr = &physics_thread;
+	has_focus.test_and_set();
 }
 
 void BF::clear()
