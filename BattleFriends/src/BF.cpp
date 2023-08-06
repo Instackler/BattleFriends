@@ -26,7 +26,7 @@ void BF::physics_loop()
 	do
 	{
 		BF::update();
-		//sf::sleep(sf::milliseconds(1));
+		sf::sleep(sf::milliseconds(1));
 		//sf::sleep(sf::milliseconds(1));
 		physics_time.store(physics_clock.restart());
 	} while (running.test());
@@ -137,19 +137,6 @@ void BF::update()
 void BF::draw(sf::RenderTarget& target)
 {
 	static sf::View player_view({ 0.f, 0.f , 1920, 1080 });
-
-	/*
-	const std::lock_guard<std::mutex> draw_lock(update_mutex);
-	player_view.setCenter(players.size() > 0 ? players[0].getPosition() : sf::Vector2f{ MAP_WIDTH / 2.f, MAP_HEIGHT / 2.f });
-	target.setView(player_view);
-	target.draw(background);
-	drawEntities(target);
-	drawPlayers(target);
-	drawProjectiles(target);
-	target.setView(default_view);
-	minimap::draw(target);
-	*/
-
 	while (true)
 	{
 		if (update_mutex.try_lock())
@@ -311,26 +298,6 @@ void BF::draw_debug_hud(sf::RenderTarget& target)
 	static sf::Time frame_end;
 	static sf::Clock fps_clock;
 	static bool init = init_debug_hud(fpsCounter, info, Esc_hint);
-
-	/*
-	if (init)
-	{
-		BF::loadResource(Raleway_Semibold, "TTF", font);
-		fpsCounter.setFont(font);
-		fpsCounter.setString("Initializing...");
-
-		info.setFont(font);
-		info.move(0.f, sf::VideoMode::getDesktopMode().height / 20.f * 0.7f);
-		info.setString("Initializing...");
-
-		Esc_hint.setFont(font);
-		Esc_hint.setCharacterSize(40);
-		Esc_hint.move(0.f, sf::VideoMode::getDesktopMode().height - 141.f);
-		Esc_hint.setString("Move: W, A, S, D\nShoot: LMB\nPress Esc to exit");
-
-		init = false;
-	}
-	*/
 
 	target.draw(fpsCounter);
 	target.draw(info);

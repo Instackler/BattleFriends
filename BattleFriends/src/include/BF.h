@@ -4,9 +4,6 @@
 #include <Player.h>
 #include <Projectile.h>
 #include <BFconstants.h>
-
-//#define SHOW_FPS
-
 	
 namespace BF
 {
@@ -20,31 +17,30 @@ namespace BF
 	extern sf::RenderTarget* default_target;
 	extern std::unordered_map<int, sf::Texture> textures;
 
-	void loadTextures();
+	// game loop functions
+	void init(sf::RenderTarget* target);
+	void update();
+	void draw(sf::RenderTarget& target = *default_target);
+	void draw_debug_hud(sf::RenderTarget& target = *default_target);
+	void clear();
 
+	//ggpo callbacks
+	bool save_game_state(unsigned char** buffer, int* len, int* checksum, int frame);
+	void free_buffer(void* buffer);
+
+	// utility functions
+	void spawn_random_ent();
+	void loadTextures();
 	void updateEntities();
 	void updatePlayers();
 	void updateProjectiles();
 	void checkCollisions();
 	void checkHits();
 	void checkInputs();
-
+	void physics_loop();
+	size_t get_Entity_count();
+	size_t get_Projectile_count();
 	void drawEntities(sf::RenderTarget& target = *default_target);
 	void drawPlayers(sf::RenderTarget& target = *default_target);
 	void drawProjectiles(sf::RenderTarget& target = *default_target);
-
-	void init(sf::RenderTarget* target);
-	void physics_loop();
-	void update();
-	void draw(sf::RenderTarget& target = *default_target);
-	void draw_debug_hud(sf::RenderTarget& target = *default_target);
-	void clear();
-
-	bool save_game_state(unsigned char** buffer, int* len, int* checksum, int frame);
-	void free_buffer(void* buffer);
-
-	void spawn_random_ent();
-
-	size_t get_Entity_count();
-	size_t get_Projectile_count();
 }
