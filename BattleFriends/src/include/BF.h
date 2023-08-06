@@ -1,9 +1,9 @@
 #pragma once
+#include <BFconstants.h>
 #include <loadResource.h>
 #include <Entity.h>
 #include <Player.h>
 #include <Projectile.h>
-#include <BFconstants.h>
 	
 namespace BF
 {
@@ -16,6 +16,8 @@ namespace BF
 	// renderer variables
 	extern sf::RenderTarget* default_target;
 	extern std::unordered_map<int, sf::Texture> textures;
+
+	extern std::mutex update_mutex;
 
 	// game loop functions
 	void init(sf::RenderTarget* target);

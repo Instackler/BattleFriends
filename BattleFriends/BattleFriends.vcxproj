@@ -219,6 +219,7 @@
     </ClCompile>
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Projectile.cpp" />
+    <ClCompile Include="src\save_game_state.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\BFconstants.h" />
@@ -230,6 +231,7 @@
     <ClInclude Include="src\include\Projectile.h" />
     <ClInclude Include="src\include\BF.h" />
     <ClInclude Include="src\include\resource.h" />
+    <ClInclude Include="src\include\save_game_state.h" />
   </ItemGroup>
   <ItemGroup>
     <_EmbedManagedResourceFile Include="resources\logo.png" />
