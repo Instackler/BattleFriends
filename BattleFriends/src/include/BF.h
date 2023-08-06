@@ -10,19 +10,15 @@
 	
 namespace BF
 {
-	// game state
+	// game state and inputs
 	extern std::vector<Entity> entities;
 	extern std::vector<Player> players;
 	extern std::vector<Projectile> projectiles;
-
-	// game inputs
 	extern std::vector<BF::player_inputs> game_inputs;
 
+	// renderer variables
 	extern sf::RenderTarget* default_target;
-	extern sf::VideoMode screen_params;
 	extern std::unordered_map<int, sf::Texture> textures;
-	extern std::atomic_flag running;
-	extern std::atomic<sf::Time> physics_time;
 
 	void loadTextures();
 

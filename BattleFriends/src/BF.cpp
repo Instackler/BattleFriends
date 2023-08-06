@@ -2,23 +2,22 @@
 #include <BF.h>
 #include <minimap.h>
 
-// Game state
+// Game state and inputs
 std::vector<BF::Entity> BF::entities;
 std::vector<BF::Player> BF::players;
 std::vector<BF::Projectile> BF::projectiles;
 std::vector<BF::player_inputs> BF::game_inputs;
 
-
+// renderer variables
 sf::RenderTarget* BF::default_target = nullptr;
-sf::View default_view;
 sf::Sprite background;
 std::unordered_map<int, sf::Texture> BF::textures;
-std::mutex update_mutex;
 
 // Physics thread vars
-std::atomic_flag BF::running;
-std::atomic<sf::Time> BF::physics_time;
+std::atomic_flag running;
+std::atomic<sf::Time> physics_time;
 std::thread* physics_thread_ptr = nullptr;
+std::mutex update_mutex;
 
 
 void BF::physics_loop()
@@ -27,7 +26,7 @@ void BF::physics_loop()
 	do
 	{
 		BF::update();
-		sf::sleep(sf::milliseconds(1));
+		//sf::sleep(sf::milliseconds(1));
 		//sf::sleep(sf::milliseconds(1));
 		physics_time.store(physics_clock.restart());
 	} while (running.test());
@@ -104,7 +103,6 @@ void BF::init(sf::RenderTarget* target)
 	/////////////////////////////////////////////////////
 
 	default_target = target;
-	default_view = target->getDefaultView();
 
 	minimap::init();
 
@@ -156,13 +154,13 @@ void BF::draw(sf::RenderTarget& target)
 	{
 		if (update_mutex.try_lock())
 		{
-			player_view.setCenter(players.size() > 0 ? players[0].getPosition() : sf::Vector2f{MAP_WIDTH / 2.f, MAP_HEIGHT / 2.f});
+			player_view.setCenter(players.size() > 0 ? players[0].getPosition() : player_view.getCenter());
 			target.setView(player_view);
 			target.draw(background);
 			drawEntities(target);
 			drawPlayers(target);
 			drawProjectiles(target);
-			target.setView(default_view);
+			target.setView(target.getDefaultView());
 			minimap::draw(target);
 
 			update_mutex.unlock();
@@ -284,17 +282,37 @@ void BF::spawn_random_ent()
 	}
 }
 
+bool init_debug_hud(sf::Text& fpsCounter, sf::Text& info, sf::Text& Esc_hint)
+{
+	static sf::Font font;
+	BF::loadResource(Raleway_Semibold, "TTF", font);
+	
+	fpsCounter.setFont(font);
+	fpsCounter.setString("Initializing...");
+
+	info.setFont(font);
+	info.move(0.f, sf::VideoMode::getDesktopMode().height / 20.f * 0.7f);
+	info.setString("Initializing...");
+
+	Esc_hint.setFont(font);
+	Esc_hint.setCharacterSize(40);
+	Esc_hint.move(0.f, sf::VideoMode::getDesktopMode().height - 141.f);
+	Esc_hint.setString("Move: W, A, S, D\nShoot: LMB\nPress Esc to exit");
+	
+	return true;
+}
+
 void BF::draw_debug_hud(sf::RenderTarget& target)
 {
-	static bool init = true;
 	static int frames = 0;
-	static sf::Font font;
 	static sf::Text fpsCounter;
 	static sf::Text info;
 	static sf::Text Esc_hint;
 	static sf::Time frame_end;
 	static sf::Clock fps_clock;
+	static bool init = init_debug_hud(fpsCounter, info, Esc_hint);
 
+	/*
 	if (init)
 	{
 		BF::loadResource(Raleway_Semibold, "TTF", font);
@@ -312,6 +330,7 @@ void BF::draw_debug_hud(sf::RenderTarget& target)
 
 		init = false;
 	}
+	*/
 
 	target.draw(fpsCounter);
 	target.draw(info);
