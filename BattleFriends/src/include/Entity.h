@@ -8,8 +8,8 @@ namespace BF
 	public:
 		//Entity(const char* filename);
 		Entity(int textureID);
+		Entity(const Entity&);
 		Entity() = delete;
-		Entity(Entity&) = delete;
 		~Entity();
 		Entity(Entity&& other) noexcept;
 		Entity& operator= (const Entity&);
@@ -28,7 +28,6 @@ namespace BF
 
 	protected:
 		float radius = 1.f;
-		//sf::Texture m_Texture;
 		int m_textureID = 0;
 		float m_SpeedX = 0.f, m_SpeedY = 0.f;
 		int health = 100;

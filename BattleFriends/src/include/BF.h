@@ -44,6 +44,9 @@ namespace BF
 	void draw_debug_hud(sf::RenderTarget& target = *default_target);
 	void clear();
 
+	bool save_game_state(unsigned char** buffer, int* len, int* checksum, int frame);
+	void free_buffer(void* buffer);
+
 	void spawn_random_ent();
 
 	size_t get_Entity_count();

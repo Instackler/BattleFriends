@@ -3,21 +3,6 @@
 #include <BF.h>
 
 
-/*
-BF::Entity::Entity(const char* filename)
-{
-	m_Texture.loadFromFile(filename);
-	setTexture(m_Texture);
-
-	sf::FloatRect bounding_box = getLocalBounds();
-	setOrigin(bounding_box.width / 2.f, bounding_box.height / 2.f);
-	radius = bounding_box.width < bounding_box.height ?
-		bounding_box.width / 2.f : bounding_box.height / 2.f;
-
-	// TODO: add logging		std::cout << "Created Entity" << std::endl;
-}
-*/
-
 BF::Entity::Entity(int textureID)
 	:m_textureID(textureID)
 {
@@ -29,6 +14,18 @@ BF::Entity::Entity(int textureID)
 		bounding_box.width / 2.f : bounding_box.height / 2.f;
 
 	// TODO: add logging		std::cout << "Created Entity" << std::endl;
+}
+
+BF::Entity::Entity(const Entity& other)
+	:sf::Sprite(other)
+{
+	m_textureID = other.m_textureID;
+	setTexture(textures[m_textureID]);
+	radius = other.radius;
+	setPosition(other.getPosition());
+	setSpeed(other.m_SpeedX, other.m_SpeedY);
+	health = other.health;
+	stationary = other.stationary;
 }
 
 BF::Entity::~Entity()
