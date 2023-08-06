@@ -33,25 +33,7 @@ int main()
 	BF::init(&window);
 	BF::spawn_random_ent();
 
-	//buffer = new unsigned char[BF::entities.size() * sizeof(BF::Entity)];
-	int len = 0;
-	unsigned char* buffer = NULL;
-	BF::save_game_state(&buffer, &len, 0, 0);
-	BF::entities.clear();
-	BF::players.clear();
-	BF::projectiles.clear();
 
-	{
-		size_t entities_size = ((size_t*)buffer)[0];
-		size_t players_size = ((size_t*)buffer)[1];
-		size_t projectiles_size = ((size_t*)buffer)[2];
-
-		BF::entities = std::vector<BF::Entity>((BF::Entity*)(buffer + sizeof(size_t) * 3), (BF::Entity*)(buffer + sizeof(size_t) * 3) + entities_size);
-		BF::players = std::vector<BF::Player>((BF::Player*)(buffer + sizeof(size_t) * 3), (BF::Player*)(buffer + sizeof(size_t) * 3) + entities_size);
-		BF::entities = std::vector<BF::Entity>((BF::Entity*)(buffer + sizeof(size_t) * 3), (BF::Entity*)(buffer + sizeof(size_t) * 3) + entities_size);
-	}
-
-		BF::free_buffer(buffer);
 
 	//GGPOSession* ggpo = NULL;
 	//GGPOErrorCode result;
