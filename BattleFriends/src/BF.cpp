@@ -27,7 +27,7 @@ void BF::physics_loop()
 	do
 	{
 		BF::update();
-		sf::sleep(sf::milliseconds(1));
+		//sf::sleep(sf::milliseconds(1));
 		//sf::sleep(sf::milliseconds(1));
 		physics_time.store(physics_clock.restart());
 	} while (running.test());
@@ -161,11 +161,21 @@ void BF::update()
 	updateProjectiles();
 	checkCollisions();
 	checkHits();
+
+	/*update_mutex.lock();
+	BF::checkInputs();
+	updatePlayers();
+	updateEntities();
+	updateProjectiles();
+	checkCollisions();
+	checkHits();
+	update_mutex.unlock();*/
 }
 
 void BF::draw(sf::RenderTarget& target)
 {
 	static sf::View player_view({ 0.f, 0.f , 1920, 1080 });
+
 	while (true)
 	{
 		if (update_mutex.try_lock())
@@ -178,12 +188,24 @@ void BF::draw(sf::RenderTarget& target)
 			drawProjectiles(target);
 			target.setView(target.getDefaultView());
 			minimap::draw(target);
+			draw_debug_hud();
 
 			update_mutex.unlock();
 			break;
 		}
 		// wait before trying again
 	}
+
+	/*std::lock_guard<std::mutex> draw_lock(update_mutex);
+	player_view.setCenter(players.size() > 0 ? players[0].getPosition() : player_view.getCenter());
+	target.setView(player_view);
+	target.draw(background);
+	drawEntities(target);
+	drawPlayers(target);
+	drawProjectiles(target);
+	target.setView(target.getDefaultView());
+	minimap::draw(target);
+	draw_debug_hud();*/
 }
 
 void BF::drawEntities(sf::RenderTarget& target)

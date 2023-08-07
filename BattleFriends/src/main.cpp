@@ -7,20 +7,12 @@ int main()
 {
 	sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "BattleFriends", sf::Style::Fullscreen);
 	SetForegroundWindow(window.getSystemHandle());
-	window.setFramerateLimit(170);
+	//window.setFramerateLimit(170);
 
 
 	BF::init(&window);
 	BF::spawn_random_ent();
 
-	unsigned char* buffer;
-	int len;
-	BF::save_game_state(&buffer, &len, 0, 0);
-	BF::players.clear();
-	BF::entities.clear();
-	BF::projectiles.clear();
-	BF::load_game_state(buffer, len);
-	BF::free_buffer(buffer);
 
 	//GGPOSession* ggpo = NULL;
 	//GGPOErrorCode result;
@@ -42,6 +34,8 @@ int main()
 	//	sizeof(int),   // size of an input packet
 	//	8001);
 	
+	unsigned char* buffer;
+	int len;
 
 	sf::Event event;
 	while (window.isOpen())
@@ -53,17 +47,22 @@ int main()
 
 		window.clear(sf::Color(20, 21, 26, 100));
 
-		unsigned char* buffer;
-		int len;
-		BF::save_game_state(&buffer, &len, 0, 0);
-		BF::players.clear();
-		BF::entities.clear();
-		BF::projectiles.clear();
+		/*BF::save_game_state(&buffer, &len, 0, 0);
+		while (true)
+		{
+			if (BF::update_mutex.try_lock())
+			{
+				BF::players.clear();
+				BF::entities.clear();
+				BF::projectiles.clear();
+				BF::update_mutex.unlock();
+				break;
+			}
+		};
 		BF::load_game_state(buffer, len);
-		BF::free_buffer(buffer);
+		BF::free_buffer(buffer);*/
 
 		BF::draw();
-		BF::draw_debug_hud();
 		window.display();
 	}
 
