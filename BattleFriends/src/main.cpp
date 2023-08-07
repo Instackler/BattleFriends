@@ -7,7 +7,8 @@ int main()
 {
 	sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "BattleFriends", sf::Style::Fullscreen);
 	SetForegroundWindow(window.getSystemHandle());
-	//window.setFramerateLimit(170);
+	//window.setFramerateLimit(60);
+	window.setVerticalSyncEnabled(true);
 
 
 	BF::init(&window);
@@ -47,7 +48,7 @@ int main()
 
 		window.clear(sf::Color(20, 21, 26, 100));
 
-		/*BF::save_game_state(&buffer, &len, 0, 0);
+		BF::save_game_state(&buffer, &len, 0, 0);
 		while (true)
 		{
 			if (BF::update_mutex.try_lock())
@@ -58,9 +59,9 @@ int main()
 				BF::update_mutex.unlock();
 				break;
 			}
-		};
+		}
 		BF::load_game_state(buffer, len);
-		BF::free_buffer(buffer);*/
+		BF::free_buffer(buffer);
 
 		BF::draw();
 		window.display();
