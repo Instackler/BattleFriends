@@ -13,6 +13,14 @@ int main()
 	BF::init(&window);
 	BF::spawn_random_ent();
 
+	unsigned char* buffer;
+	int len;
+	BF::save_game_state(&buffer, &len, 0, 0);
+	BF::players.clear();
+	BF::entities.clear();
+	BF::projectiles.clear();
+	BF::load_game_state(buffer, len);
+	BF::free_buffer(buffer);
 
 	//GGPOSession* ggpo = NULL;
 	//GGPOErrorCode result;
@@ -44,6 +52,16 @@ int main()
 		}
 
 		window.clear(sf::Color(20, 21, 26, 100));
+
+		unsigned char* buffer;
+		int len;
+		BF::save_game_state(&buffer, &len, 0, 0);
+		BF::players.clear();
+		BF::entities.clear();
+		BF::projectiles.clear();
+		BF::load_game_state(buffer, len);
+		BF::free_buffer(buffer);
+
 		BF::draw();
 		BF::draw_debug_hud();
 		window.display();

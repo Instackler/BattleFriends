@@ -18,9 +18,18 @@ BF::Player::Player(int textureID)
 	// TODO: add logging		std::cout << "Created Player" << std::endl;
 }
 
+BF::Player::Player(const Player& other)
+	:Entity(other)
+{
+	cooldown = other.cooldown;
+	counter = other.counter;
+}
+
 BF::Player::Player(Player&& other) noexcept
 	:Entity(std::move(other))
 {
+	cooldown = other.cooldown;
+	counter = other.counter;
 	// TODO: add logging		std::cout << "Copied Player" << std::endl;
 }
 

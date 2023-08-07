@@ -4,6 +4,12 @@
 
 
 
+BF::Projectile::Projectile(const Projectile& other)
+	:Entity(other)
+{
+	damage = other.damage;
+}
+
 BF::Projectile::Projectile(const sf::Vector2f& pos, const sf::Vector2f& speed)
 	:Entity(proj)
 {

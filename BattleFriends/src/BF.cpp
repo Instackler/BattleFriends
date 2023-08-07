@@ -279,9 +279,9 @@ void BF::spawn_random_ent()
 {
 	srand(time(NULL));
 	players.emplace_back(logo);
-	players.emplace_back(logo);
+	//players.emplace_back(logo);
 	players[0].move(MAP_WIDTH / 2.f, MAP_HEIGHT / 2.f);
-	players[1].move(MAP_WIDTH / 2.f, MAP_HEIGHT / 2.f);
+	//players[1].move(MAP_WIDTH / 2.f, MAP_HEIGHT / 2.f);
 	for (int i = 0; i < ENTITY_NUM; i++)
 	{
 		entities.emplace_back(logo);
@@ -343,11 +343,6 @@ void BF::draw_debug_hud(sf::RenderTarget& target)
 			"Entities: " + std::to_string(BF::get_Entity_count()) + "\n" +
 			"Projectiles: " + std::to_string(BF::get_Projectile_count()));
 	}
-}
-
-void BF::free_buffer(void* buffer)
-{
-	delete[] buffer;
 }
 
 size_t BF::get_Entity_count()

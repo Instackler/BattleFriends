@@ -4,6 +4,7 @@
 #include <Entity.h>
 #include <Player.h>
 #include <Projectile.h>
+#include <game_state.h>
 	
 namespace BF
 {
