@@ -13,10 +13,11 @@ namespace BF
 	extern std::vector<Player> players;
 	extern std::vector<Projectile> projectiles;
 	extern std::vector<BF::player_inputs> game_inputs;
-
+	
 	// renderer variables
 	extern sf::RenderTarget* default_target;
 	extern std::unordered_map<int, sf::Texture> textures;
+	extern Player* local_player;
 
 	extern std::mutex update_mutex;
 

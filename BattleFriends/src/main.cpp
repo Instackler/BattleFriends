@@ -5,7 +5,8 @@
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "BattleFriends", sf::Style::Fullscreen);
+	//sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "BattleFriends", sf::Style::Fullscreen);
+	sf::RenderWindow window(sf::VideoMode(800, 450), "BattleFriends", sf::Style::Close);
 	SetForegroundWindow(window.getSystemHandle());
 	//window.setFramerateLimit(60);
 	window.setVerticalSyncEnabled(true);
@@ -47,22 +48,6 @@ int main()
 		}
 
 		window.clear(sf::Color(20, 21, 26, 100));
-
-		BF::save_game_state(&buffer, &len, 0, 0);
-		while (true)
-		{
-			if (BF::update_mutex.try_lock())
-			{
-				BF::players.clear();
-				BF::entities.clear();
-				BF::projectiles.clear();
-				BF::update_mutex.unlock();
-				break;
-			}
-		}
-		BF::load_game_state(buffer, len);
-		BF::free_buffer(buffer);
-
 		BF::draw();
 		window.display();
 	}

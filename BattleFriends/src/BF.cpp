@@ -13,6 +13,7 @@ sf::RenderTarget* BF::default_target = nullptr;
 sf::Sprite background;
 std::unordered_map<int, sf::Texture> BF::textures;
 std::atomic_flag has_focus;
+BF::Player* BF::local_player = nullptr;
 
 // Physics thread vars
 std::atomic_flag running;
@@ -299,22 +300,20 @@ void BF::spawn_random_ent()
 	}
 }
 
-bool init_debug_hud(sf::Text& fpsCounter, sf::Text& info, sf::Text& Esc_hint)
+bool init_debug_hud(sf::Text& info, sf::Text& Esc_hint)
 {
 	static sf::Font font;
 	BF::loadResource(Raleway_Semibold, "TTF", font);
-	
-	fpsCounter.setFont(font);
-	fpsCounter.setString("Initializing...");
 
 	info.setFont(font);
-	info.move(0.f, sf::VideoMode::getDesktopMode().height / 20.f * 0.7f);
+	info.setCharacterSize(BF::default_target->getSize().y * HUD_SCALE);
 	info.setString("Initializing...");
 
 	Esc_hint.setFont(font);
-	Esc_hint.setCharacterSize(40);
-	Esc_hint.move(0.f, sf::VideoMode::getDesktopMode().height - 141.f);
-	Esc_hint.setString("Move: W, A, S, D\nShoot: LMB\nPress Esc to exit");
+	Esc_hint.setCharacterSize(BF::default_target->getSize().y * HUD_SCALE);
+	Esc_hint.setLineSpacing(1.15f);
+	Esc_hint.move(0.f, (float)BF::default_target->getSize().y - (float)Esc_hint.getCharacterSize() * pow(Esc_hint.getLineSpacing(), 2.f) * 3.f);
+	Esc_hint.setString("Move: W, A, S, D\nShoot: LMB\nPress Esc to exit\n\n\n\n\n\n\n\n15515");
 	
 	return true;
 }
@@ -322,14 +321,12 @@ bool init_debug_hud(sf::Text& fpsCounter, sf::Text& info, sf::Text& Esc_hint)
 void BF::draw_debug_hud(sf::RenderTarget& target)
 {
 	static int frames = 0;
-	static sf::Text fpsCounter;
 	static sf::Text info;
 	static sf::Text Esc_hint;
 	static sf::Time frame_end;
 	static sf::Clock fps_clock;
-	static bool init = init_debug_hud(fpsCounter, info, Esc_hint);
+	static bool init = init_debug_hud(info, Esc_hint);
 
-	target.draw(fpsCounter);
 	target.draw(info);
 	target.draw(Esc_hint);
 
@@ -337,9 +334,9 @@ void BF::draw_debug_hud(sf::RenderTarget& target)
 	if (frames == 10)
 	{
 		frame_end = fps_clock.restart();
-		fpsCounter.setString(std::to_string(10.f / frame_end.asSeconds()));
 		frames = 0;
-		info.setString("Frame time: " + std::to_string(frame_end.asMicroseconds() / 10) + "us" + "\n" +
+		info.setString(std::to_string(10.f / frame_end.asSeconds()) + "\n" +
+			"Frame time: " + std::to_string(frame_end.asMicroseconds() / 10) + "us" + "\n" +
 			"Physics time: " + std::to_string(physics_time.load().asMicroseconds()) + "us" + "\n" +
 			"Entities: " + std::to_string(BF::get_Entity_count()) + "\n" +
 			"Projectiles: " + std::to_string(BF::get_Projectile_count()));
