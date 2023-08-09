@@ -35,7 +35,7 @@ int main()
 	//	2,             // 2 players
 	//	sizeof(int),   // size of an input packet
 	//	8001);
-	
+
 	unsigned char* buffer;
 	int len;
 

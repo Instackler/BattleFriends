@@ -3,7 +3,7 @@
 #include <BF.h>
 
 
-namespace 
+namespace
 {
 	#ifdef _DEBUG
 	sf::RenderTexture& get_texture()    //I have to use this because sf::RenderTexture doesn't support global initialization in debug mode

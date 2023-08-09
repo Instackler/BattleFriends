@@ -123,7 +123,7 @@ void BF::init(sf::RenderTarget* target)
 
 	///////////////////////////////////// load the map
 	float background_scale = 10.f;
-	background.setTextureRect(sf::IntRect{0, 0, MAP_WIDTH / (int)background_scale, MAP_HEIGHT / (int)background_scale});
+	background.setTextureRect(sf::IntRect{ 0, 0, MAP_WIDTH / (int)background_scale, MAP_HEIGHT / (int)background_scale });
 	textures[bedrock].setRepeated(true);
 	background.setTexture(textures[bedrock]);
 	background.setScale(background_scale, background_scale);
@@ -216,7 +216,7 @@ void BF::checkCollisions()
 {
 	for (int i = 0; i < (int)entities.size() - 1; i++)
 	{
-		for (int j = i + 1; j < entities.size() ; j++)   //for each unique pair
+		for (int j = i + 1; j < entities.size(); j++)   //for each unique pair
 		{
 			if (entities[i].intersects(entities[j]))
 				entities[i].collide(entities[j]);
@@ -272,7 +272,7 @@ void BF::checkHits()
 		}
 	}
 
-	std::erase_if(projectiles,[](BF::Projectile& projectile) { return projectile.is_dead(); });
+	std::erase_if(projectiles, [](BF::Projectile& projectile) { return projectile.is_dead(); });
 	std::erase_if(players, [](BF::Player& player) { return player.is_dead(); });
 	std::erase_if(entities, [](BF::Entity& entity) { return entity.is_dead(); });
 }
@@ -287,7 +287,7 @@ void BF::spawn_random_ent()
 	for (int i = 0; i < ENTITY_NUM; i++)
 	{
 		entities.emplace_back(logo);
-		entities[i].setColor(sf::Color{255, 100, 100});
+		entities[i].setColor(sf::Color{ 255, 100, 100 });
 		entities[i].move(rand() % MAP_WIDTH, rand() % MAP_HEIGHT);
 		if (!(rand() % 10))
 		{
@@ -314,7 +314,7 @@ bool init_debug_hud(sf::Text& info, sf::Text& Esc_hint)
 	Esc_hint.setLineSpacing(1.15f);
 	Esc_hint.move(0.f, (float)BF::default_target->getSize().y - (float)Esc_hint.getCharacterSize() * pow(Esc_hint.getLineSpacing(), 2.f) * 3.f);
 	Esc_hint.setString("Move: W, A, S, D\nShoot: LMB\nPress Esc to exit\n\n\n\n\n\n\n\n15515");
-	
+
 	return true;
 }
 

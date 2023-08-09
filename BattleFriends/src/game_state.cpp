@@ -4,10 +4,10 @@
 
 BF::game_state::game_state(size_t a, size_t b, size_t c)
 	:counts(a, b, c),
-	 counts_data(&counts),
-	 entity_data(entities.data()),
-	 player_data(players.data()),
-	 projectile_data(projectiles.data())
+	counts_data(&counts),
+	entity_data(entities.data()),
+	player_data(players.data()),
+	projectile_data(projectiles.data())
 {
 	counts_byte_size = sizeof(counts);
 	entities_byte_size = counts.entity_count * sizeof(Entity);
@@ -51,11 +51,11 @@ bool BF::load_game_state(unsigned char* buffer, int len)
 		{
 			size_t3 counts{};
 			std::memcpy(&counts, buffer, sizeof(counts));
-			game_state gs{counts.entity_count, counts.player_count, counts.projectile_count};
+			game_state gs{ counts.entity_count, counts.player_count, counts.projectile_count };
 			entities = std::vector<Entity>((Entity*)(buffer + gs.entities_offset), (Entity*)(buffer + gs.entities_offset) + gs.counts.entity_count);
 			players = std::vector<Player>((Player*)(buffer + gs.players_offset), (Player*)(buffer + gs.players_offset) + gs.counts.player_count);
 			projectiles = std::vector<Projectile>((Projectile*)(buffer + gs.projectiles_offset),
-												  (Projectile*)(buffer + gs.projectiles_offset) + gs.counts.projectile_count);
+				(Projectile*)(buffer + gs.projectiles_offset) + gs.counts.projectile_count);
 			update_mutex.unlock();
 			break;
 		}
