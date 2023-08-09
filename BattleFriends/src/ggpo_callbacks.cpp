@@ -10,3 +10,8 @@ bool BF::log_game_state(char* filename, unsigned char* buffer, int len)
 {
     return true;
 }
+
+bool BF::advance_frame(int flags)
+{
+    return false;
+}
