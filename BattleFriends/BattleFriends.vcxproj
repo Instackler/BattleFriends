@@ -201,7 +201,7 @@
   <ItemGroup>
     <ClCompile Include="src\BF.cpp" />
     <ClCompile Include="src\Entity.cpp" />
-    <ClCompile Include="src\include\ggpo_callbacks.cpp" />
+    <ClCompile Include="src\ggpo_callbacks.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\minimap.cpp" />
     <ClCompile Include="src\pch.cpp">

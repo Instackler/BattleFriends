@@ -39,7 +39,7 @@
     <ClCompile Include="src\game_state.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\include\ggpo_callbacks.cpp">
+    <ClCompile Include="src\ggpo_callbacks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
