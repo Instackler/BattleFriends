@@ -8,6 +8,11 @@ std::vector<BF::Player> BF::players;
 std::vector<BF::Projectile> BF::projectiles;
 std::vector<BF::player_inputs> BF::game_inputs;
 
+// ggpo variables
+GGPOSession* BF::session;
+GGPOPlayer p1, p2;
+GGPOPlayerHandle player_handles[2];
+
 // renderer variables
 sf::RenderTarget* BF::default_target = nullptr;
 sf::Sprite background;
@@ -134,6 +139,8 @@ void BF::init(sf::RenderTarget* target)
 
 	minimap::init();
 
+	BF::start_ggpo();
+
 	running.test_and_set();
 	static std::thread physics_thread(BF::physics_loop);
 	physics_thread_ptr = &physics_thread;
@@ -144,6 +151,8 @@ void BF::clear()
 {
 	running.clear();
 	physics_thread_ptr->join();
+	ggpo_close_session(session);
+	ggpo_deinitialize_winsock();
 
 	entities.clear();
 	players.clear();
@@ -154,6 +163,7 @@ void BF::clear()
 
 void BF::update()
 {
+	{
 	const std::lock_guard<std::mutex> update_lock(update_mutex);
 	BF::checkInputs();
 	updatePlayers();
@@ -161,6 +171,8 @@ void BF::update()
 	updateProjectiles();
 	checkCollisions();
 	checkHits();
+	}
+	ggpo_advance_frame(session);
 }
 
 void BF::draw(sf::RenderTarget& target)
@@ -275,6 +287,39 @@ void BF::checkHits()
 	std::erase_if(projectiles, [](BF::Projectile& projectile) { return projectile.is_dead(); });
 	std::erase_if(players, [](BF::Player& player) { return player.is_dead(); });
 	std::erase_if(entities, [](BF::Entity& entity) { return entity.is_dead(); });
+}
+
+void BF::start_ggpo()
+{
+	GGPOSessionCallbacks cb;
+
+	/* fill in all callback functions */
+	cb.begin_game = BF::begin_game;
+	cb.advance_frame = BF::advance_frame;
+	cb.load_game_state = BF::load_game_state;
+	cb.save_game_state = BF::save_game_state;
+	cb.free_buffer = BF::free_buffer;
+	cb.on_event = BF::on_event;
+
+	ggpo_initialize_winsock();
+	auto result = ggpo_start_session(&session,         // the new session object
+		&cb,           // our callbacks
+		"BattleFriends",    // application name
+		2,             // 2 players
+		sizeof(int),   // size of an input packet
+		8001);         // our local udp port
+
+	p1.size = sizeof(GGPOPlayer);
+	p2.size = sizeof(GGPOPlayer);
+	p1.type = GGPO_PLAYERTYPE_LOCAL;                // local player
+	p2.type = GGPO_PLAYERTYPE_REMOTE;               // remote player
+	p1.player_num = 1;
+	p2.player_num = 2;
+	strcpy_s(p2.u.remote.ip_address, sizeof("127.0.0.1"), "127.0.0.1");  // ip addess of the player
+	p2.u.remote.port = 8002;               // port of that player
+
+	result = ggpo_add_player(session, &p1, &player_handles[0]);
+	result = ggpo_add_player(session, &p2, &player_handles[1]);
 }
 
 void BF::spawn_random_ent()

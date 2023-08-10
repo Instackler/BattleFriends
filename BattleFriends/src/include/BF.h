@@ -5,6 +5,7 @@
 #include <Player.h>
 #include <Projectile.h>
 #include <game_state.h>
+#include <ggpo_callbacks.h>
 	
 namespace BF
 {
@@ -13,6 +14,7 @@ namespace BF
 	extern std::vector<Player> players;
 	extern std::vector<Projectile> projectiles;
 	extern std::vector<BF::player_inputs> game_inputs;
+	extern GGPOSession* session;
 	
 	// renderer variables
 	extern sf::RenderTarget* default_target;
@@ -34,6 +36,7 @@ namespace BF
 	void free_buffer(void* buffer);
 
 	// utility functions
+	void start_ggpo();
 	void spawn_random_ent();
 	void loadTextures();
 	void updateEntities();

@@ -13,5 +13,11 @@ bool BF::log_game_state(char* filename, unsigned char* buffer, int len)
 
 bool BF::advance_frame(int flags)
 {
-	return false;
+
+	return true;
+}
+
+bool BF::on_event(GGPOEvent* info)
+{
+	return true;
 }
