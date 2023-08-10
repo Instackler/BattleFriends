@@ -291,7 +291,7 @@ void BF::checkHits()
 
 void BF::start_ggpo()
 {
-	GGPOSessionCallbacks cb;
+	GGPOSessionCallbacks cb{};
 
 	/* fill in all callback functions */
 	cb.begin_game = BF::begin_game;
@@ -326,9 +326,9 @@ void BF::spawn_random_ent()
 {
 	srand(time(NULL));
 	players.emplace_back(logo);
-	//players.emplace_back(logo);
+	players.emplace_back(logo);
 	players[0].move(MAP_WIDTH / 2.f, MAP_HEIGHT / 2.f);
-	//players[1].move(MAP_WIDTH / 2.f, MAP_HEIGHT / 2.f);
+	players[1].move(MAP_WIDTH / 2.f, MAP_HEIGHT / 2.f);
 	for (int i = 0; i < ENTITY_NUM; i++)
 	{
 		entities.emplace_back(logo);
