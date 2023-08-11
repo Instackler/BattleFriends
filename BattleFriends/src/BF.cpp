@@ -328,7 +328,7 @@ void BF::spawn_random_ent()
 	players.emplace_back(logo);
 	players.emplace_back(logo);
 	players[0].move(MAP_WIDTH / 2.f, MAP_HEIGHT / 2.f);
-	players[1].move(MAP_WIDTH / 2.f, MAP_HEIGHT / 2.f);
+	players[1].move(MAP_WIDTH / 2.f + 200.f, MAP_HEIGHT / 2.f + 200.f);
 	for (int i = 0; i < ENTITY_NUM; i++)
 	{
 		entities.emplace_back(logo);
@@ -358,7 +358,7 @@ bool init_debug_hud(sf::Text& info, sf::Text& Esc_hint)
 	Esc_hint.setCharacterSize(BF::default_target->getSize().y * HUD_SCALE);
 	Esc_hint.setLineSpacing(1.15f);
 	Esc_hint.move(0.f, (float)BF::default_target->getSize().y - (float)Esc_hint.getCharacterSize() * pow(Esc_hint.getLineSpacing(), 2.f) * 3.f);
-	Esc_hint.setString("Move: W, A, S, D\nShoot: LMB\nPress Esc to exit\n\n\n\n\n\n\n\n15515");
+	Esc_hint.setString("Move: W, A, S, D\nShoot: LMB\nPress Esc to exit");
 
 	return true;
 }
