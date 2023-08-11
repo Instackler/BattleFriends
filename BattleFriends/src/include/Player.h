@@ -14,6 +14,7 @@ namespace BF
 	public:
 		//Player(const char* filename);
 		Player(int textureID);
+		Player(const Player&);
 		Player() = delete;
 		Player(Player&& other) noexcept;
 		Player& operator= (const Player&) = default;

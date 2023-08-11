@@ -184,7 +184,7 @@
       <CallingConvention>Cdecl</CallingConvention>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>sfml-window-s.lib;sfml-system-s.lib;opengl32.lib;freetype.lib;sfml-graphics-s.lib;winmm.lib;gdi32.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;sfml-audio-s.lib;ws2_32.lib;sfml-network-s.lib;sfml-main.lib;GGPO.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -201,7 +201,7 @@
   <ItemGroup>
     <ClCompile Include="src\BF.cpp" />
     <ClCompile Include="src\Entity.cpp" />
-    <ClCompile Include="src\loadTexture.cpp" />
+    <ClCompile Include="src\ggpo_callbacks.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\minimap.cpp" />
     <ClCompile Include="src\pch.cpp">
@@ -220,18 +220,20 @@
     </ClCompile>
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Projectile.cpp" />
+    <ClCompile Include="src\game_state.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\BFconstants.h" />
     <ClInclude Include="src\include\Entity.h" />
+    <ClInclude Include="src\include\ggpo_callbacks.h" />
     <ClInclude Include="src\include\loadResource.h" />
-    <ClInclude Include="src\include\loadTexture.h" />
     <ClInclude Include="src\include\minimap.h" />
     <ClInclude Include="src\include\pch.h" />
     <ClInclude Include="src\include\Player.h" />
     <ClInclude Include="src\include\Projectile.h" />
     <ClInclude Include="src\include\BF.h" />
     <ClInclude Include="src\include\resource.h" />
+    <ClInclude Include="src\include\game_state.h" />
   </ItemGroup>
   <ItemGroup>
     <_EmbedManagedResourceFile Include="resources\logo.png" />

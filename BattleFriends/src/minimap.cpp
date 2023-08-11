@@ -3,7 +3,7 @@
 #include <BF.h>
 
 
-namespace 
+namespace
 {
 	#ifdef _DEBUG
 	sf::RenderTexture& get_texture()    //I have to use this because sf::RenderTexture doesn't support global initialization in debug mode
@@ -21,15 +21,15 @@ namespace
 
 void minimap::init()
 {
-	unsigned int screen_width = sf::VideoMode::getDesktopMode().width;
-	unsigned int screen_height = sf::VideoMode::getDesktopMode().height;
+	unsigned int screen_width = BF::default_target->getSize().x;
+	unsigned int screen_height = BF::default_target->getSize().y;
 	float offset = screen_height * MINIMAP_OFFSET;
 
 	texture.create(MAP_WIDTH, MAP_HEIGHT); //TODO: add error checking
 	texture.setSmooth(true);
 	minimap_sprite.setTexture(texture.getTexture());
-	minimap_sprite.setPosition(screen_width - MINIMAP_WIDTH - offset, offset);
-	minimap_sprite.setScale(MINIMAP_SCALE, MINIMAP_SCALE);
+	minimap_sprite.setPosition(screen_width - MINIMAP_WIDTH * screen_height - offset, offset);
+	minimap_sprite.setScale(MINIMAP_SCALE * screen_height, MINIMAP_SCALE * screen_height);
 	minimap_sprite.setColor(sf::Color(255, 255, 255, 100));
 }
 

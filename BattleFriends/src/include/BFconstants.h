@@ -1,9 +1,10 @@
 #pragma once
 
-#define ENTITY_NUM 100
+#define ENTITY_NUM 10
 const int MAP_WIDTH = 8192;
 const int MAP_HEIGHT = 8192;
-const float MINIMAP_SCALE = 0.05f;  // in fraction of map size
+const float MINIMAP_SCALE = 0.05f / 1080.f;  // in fraction of map size
 #define MINIMAP_WIDTH (int) MAP_WIDTH * MINIMAP_SCALE   // in pixels
 #define MINIMAP_HEIGHT (int) MAP_HEIGHT * MINIMAP_SCALE  // in pixels
 const float MINIMAP_OFFSET = 1.f / 54.f;   // in fraction of screen height
+const float HUD_SCALE = 0.037f;
