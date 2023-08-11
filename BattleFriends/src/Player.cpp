@@ -14,7 +14,6 @@ BF::Player::Player(const char* filename)
 BF::Player::Player(int textureID)
 	:Entity(textureID)
 {
-	game_inputs.emplace_back(); // TODO: fix potential bug
 	// TODO: add logging		std::cout << "Created Player" << std::endl;
 }
 

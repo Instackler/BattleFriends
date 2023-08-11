@@ -1,5 +1,6 @@
 #include <pch.h>
 #include <ggpo_callbacks.h>
+#include <BF.h>
 
 bool BF::begin_game(const char* game)
 {
@@ -13,7 +14,7 @@ bool BF::log_game_state(char* filename, unsigned char* buffer, int len)
 
 bool BF::advance_frame(int flags)
 {
-
+	BF::update();
 	return true;
 }
 
