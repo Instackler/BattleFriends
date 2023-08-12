@@ -6,12 +6,14 @@
 std::vector<BF::Entity> BF::entities;
 std::vector<BF::Player> BF::players;
 std::vector<BF::Projectile> BF::projectiles;
-BF::player_inputs game_inputs[2] = {};
+BF::player_inputs BF::game_inputs[2] = {};
+BF::player_inputs local_inputs = {};
 
 // ggpo variables
 GGPOSession* BF::session;
 GGPOPlayer p1, p2;
 GGPOPlayerHandle player_handles[2];
+GGPOPlayerHandle local_ggpo_player;
 int flags[2];
 
 // renderer variables
@@ -24,19 +26,15 @@ std::atomic_flag has_focus;
 std::atomic_flag running;
 std::atomic<sf::Time> physics_time;
 std::thread* physics_thread_ptr = nullptr;
-std::mutex BF::update_mutex;
 
 
 void BF::physics_loop()
 {
 	static sf::Clock physics_clock;
-	do
-	{
-		BF::update();
-		ggpo_idle(session, 2);
-		sf::sleep(sf::milliseconds(2));
-		physics_time.store(physics_clock.restart());
-	} while (running.test());
+	physics_clock.restart();
+	ggpo_idle(session, 4);
+	run();
+	physics_time.store(physics_clock.restart());
 }
 
 void BF::process_event(sf::Event& event, sf::RenderWindow& window)
@@ -55,27 +53,25 @@ void BF::process_event(sf::Event& event, sf::RenderWindow& window)
 	}
 }
 
-void BF::checkInputs()
+void BF::updateInputs()
 {
 	if (has_focus.test())
 	{
-		game_inputs[1].up = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
-		game_inputs[1].left = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
-		game_inputs[1].down = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
-		game_inputs[1].right = sf::Keyboard::isKeyPressed(sf::Keyboard::D);
-		game_inputs[1].shoot = sf::Mouse::isButtonPressed(sf::Mouse::Left);
-		game_inputs[1].mouse_pos = sf::Mouse::getPosition();
+		local_inputs.up = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
+		local_inputs.left = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
+		local_inputs.down = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
+		local_inputs.right = sf::Keyboard::isKeyPressed(sf::Keyboard::D);
+		local_inputs.shoot = sf::Mouse::isButtonPressed(sf::Mouse::Left);
+		local_inputs.mouse_pos = sf::Mouse::getPosition();
 	}
 	else
 	{
-		game_inputs[1].up = false;
-		game_inputs[1].left = false;
-		game_inputs[1].down = false;
-		game_inputs[1].right = false;
-		game_inputs[1].shoot = false;
+		local_inputs.up = false;
+		local_inputs.left = false;
+		local_inputs.down = false;
+		local_inputs.right = false;
+		local_inputs.shoot = false;
 	}
-	ggpo_add_local_input(session, player_handles[1], &game_inputs[1], sizeof(game_inputs[1]));
-	ggpo_synchronize_input(session, &game_inputs[0], 2 * sizeof(game_inputs[0]), &flags[1]);
 }
 
 void BF::updateEntities()
@@ -142,9 +138,6 @@ void BF::init(sf::RenderTarget* target)
 
 	BF::spawn_random_ent();
 
-	running.test_and_set();
-	static std::thread physics_thread(BF::physics_loop);
-	physics_thread_ptr = &physics_thread;
 	has_focus.test_and_set();
 
 	BF::start_ggpo();
@@ -152,8 +145,6 @@ void BF::init(sf::RenderTarget* target)
 
 void BF::clear()
 {
-	running.clear();
-	physics_thread_ptr->join();
 	ggpo_close_session(session);
 	ggpo_deinitialize_winsock();
 
@@ -163,43 +154,44 @@ void BF::clear()
 	textures.clear();
 }
 
-void BF::update()
+void BF::advance()
 {
-	{
-		const std::lock_guard<std::mutex> update_lock(update_mutex);
-		checkInputs();
-		updatePlayers();
-		updateEntities();
-		updateProjectiles();
-		checkCollisions();
-		checkHits();
-	}
+	updatePlayers();
+	updateEntities();
+	updateProjectiles();
+	checkCollisions();
+	checkHits();
 	ggpo_advance_frame(session);
+}
+
+void BF::run()
+{
+	static int flags = 0;
+	updateInputs();
+	auto result = ggpo_add_local_input(session, local_ggpo_player, &local_inputs, sizeof(local_inputs));
+	if (GGPO_SUCCEEDED(result))
+	{
+		result = ggpo_synchronize_input(session, &game_inputs[0], 2 * sizeof(game_inputs[0]), &flags);
+		if (GGPO_SUCCEEDED(result))
+		{
+			advance();
+		}
+	}
 }
 
 void BF::draw(sf::RenderTarget& target)
 {
 	static sf::View player_view({ 0.f, 0.f , 1920, 1080 });
 
-	while (true)
-	{
-		if (update_mutex.try_lock())
-		{
-			player_view.setCenter(players.size() > 0 ? players[1].getPosition() : player_view.getCenter());
-			target.setView(player_view);
-			target.draw(background);
-			drawEntities(target);
-			drawPlayers(target);
-			drawProjectiles(target);
-			target.setView(target.getDefaultView());
-			minimap::draw(target);
-			draw_debug_hud();
-
-			update_mutex.unlock();
-			break;
-		}
-		//TODO: wait before trying again
-	}
+	player_view.setCenter(players.size() > 0 ? players[1].getPosition() : player_view.getCenter());
+	target.setView(player_view);
+	target.draw(background);
+	drawEntities(target);
+	drawPlayers(target);
+	drawProjectiles(target);
+	target.setView(target.getDefaultView());
+	minimap::draw(target);
+	draw_debug_hud();
 }
 
 void BF::drawEntities(sf::RenderTarget& target)
@@ -297,7 +289,7 @@ void BF::start_ggpo()
 
 	/* fill in all callback functions */
 	cb.begin_game = BF::begin_game;
-	cb.advance_frame = BF::advance_frame;
+	cb.advance_frame = BF::advance_frame_callback;
 	cb.load_game_state = BF::load_game_state;
 	cb.save_game_state = BF::save_game_state;
 	cb.free_buffer = BF::free_buffer;
@@ -307,26 +299,30 @@ void BF::start_ggpo()
 	auto result = ggpo_start_session(&session,         // the new session object
 		&cb,           // our callbacks
 		"BattleFriends",    // application name
-		2,             // 2 players
+		PLAYER_COUNT,             // 2 players
 		sizeof(player_inputs),   // size of an input packet
-		8002);         // our local udp port
+		8001);         // our local udp port
+
+	ggpo_set_disconnect_timeout(session, 0);
 
 	p1.size = sizeof(GGPOPlayer);
 	p2.size = sizeof(GGPOPlayer);
-	p1.type = GGPO_PLAYERTYPE_REMOTE;                // local player
-	p2.type = GGPO_PLAYERTYPE_LOCAL;               // remote player
-	p1.player_num = 2;
-	p2.player_num = 1;
-	strcpy_s(p1.u.remote.ip_address, sizeof("127.0.0.1"), "127.0.0.1");  // ip addess of the player
-	p1.u.remote.port = 8001;               // port of that player
+	p1.player_num = 1;
+	p2.player_num = 2;
+	p1.type = GGPO_PLAYERTYPE_LOCAL;
+	p2.type = GGPO_PLAYERTYPE_REMOTE;
+	strcpy_s(p2.u.remote.ip_address, sizeof("127.0.0.1"), "127.0.0.1");  // ip addess of the player
+	p2.u.remote.port = 8002;               // port of that player
 
 	result = ggpo_add_player(session, &p1, &player_handles[0]);
 	result = ggpo_add_player(session, &p2, &player_handles[1]);
+	/////////// change this
+	local_ggpo_player = player_handles[1];
+	///////////
 }
 
 void BF::spawn_random_ent()
 {
-	srand(time(NULL));
 	players.emplace_back(logo);
 	players.emplace_back(logo);
 	players[0].move(MAP_WIDTH / 2.f, MAP_HEIGHT / 2.f);
@@ -335,15 +331,8 @@ void BF::spawn_random_ent()
 	{
 		entities.emplace_back(logo);
 		entities[i].setColor(sf::Color{ 255, 100, 100 });
-		entities[i].move(rand() % MAP_WIDTH, rand() % MAP_HEIGHT);
-		if (!(rand() % 10))
-		{
-			entities[i].stationary = true;
-		}
-		else
-		{
-			entities[i].setSpeed(((rand() % 11) - 5) / 20.0f, (rand() % 11) / 10.0f);
-		}
+		entities[i].move(MAP_WIDTH / 2.f + (i + 1) * 600, MAP_HEIGHT / 2.f + 600.f);
+		entities[i].setSpeed(-0.5, -0.5f);
 	}
 }
 

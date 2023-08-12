@@ -3,12 +3,12 @@
 #include <vector>
 
 
-int main()
+int main(int argc, char** argv)
 {
 	//sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "BattleFriends", sf::Style::Fullscreen);
 	sf::RenderWindow window(sf::VideoMode(800, 450), "BattleFriends", sf::Style::Close);
 	SetForegroundWindow(window.getSystemHandle());
-	//window.setFramerateLimit(60);
+	//window.setFramerateLimit(5);
 	window.setVerticalSyncEnabled(true);
 
 	BF::init(&window);
@@ -20,6 +20,8 @@ int main()
 		{
 			BF::process_event(event, window);
 		}
+
+		BF::physics_loop();
 
 		window.clear(sf::Color(20, 21, 26, 100));
 		BF::draw();
