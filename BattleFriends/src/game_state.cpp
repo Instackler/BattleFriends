@@ -30,7 +30,6 @@ bool BF::save_game_state(unsigned char** buffer, int* len, int* checksum, int fr
 	std::memcpy(*buffer + gs.entities_offset, gs.entity_data, gs.entities_byte_size);
 	std::memcpy(*buffer + gs.players_offset, gs.player_data, gs.players_byte_size);
 	std::memcpy(*buffer + gs.projectiles_offset, gs.projectile_data, gs.projectiles_byte_size);
-	
 	return true;
 }
 

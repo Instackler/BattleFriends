@@ -6,15 +6,15 @@
 std::vector<BF::Entity> BF::entities;
 std::vector<BF::Player> BF::players;
 std::vector<BF::Projectile> BF::projectiles;
-BF::player_inputs BF::game_inputs[2] = {};
+BF::player_inputs BF::game_inputs[PLAYER_COUNT] = {};
 BF::player_inputs local_inputs = {};
 
 // ggpo variables
 GGPOSession* BF::session;
-GGPOPlayer p1, p2;
-GGPOPlayerHandle player_handles[2];
+GGPOPlayer ggpo_players[PLAYER_COUNT] = {};
+GGPOPlayerHandle ggpo_player_handles[PLAYER_COUNT];
 GGPOPlayerHandle local_ggpo_player;
-int flags[2];
+int local_player_index = 0;
 
 // renderer variables
 sf::RenderTarget* BF::default_target = nullptr;
@@ -32,7 +32,8 @@ void BF::physics_loop()
 {
 	static sf::Clock physics_clock;
 	physics_clock.restart();
-	ggpo_idle(session, 4);
+	//sf::sleep(sf::milliseconds(2));
+	ggpo_idle(session, 3);
 	run();
 	physics_time.store(physics_clock.restart());
 }
@@ -50,6 +51,17 @@ void BF::process_event(sf::Event& event, sf::RenderWindow& window)
 	if (event.type == sf::Event::GainedFocus)
 	{
 		has_focus.test_and_set();
+	}
+	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::E && has_focus.test())
+	{
+		spawn_random_ent();
+	}
+	for (int i = 0; i < PLAYER_COUNT; i++)
+	{
+		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Num1 + i && has_focus.test())
+		{
+			start_ggpo(i + 1);
+		}
 	}
 }
 
@@ -136,11 +148,17 @@ void BF::init(sf::RenderTarget* target)
 	default_target = target;
 	minimap::init();
 
-	BF::spawn_random_ent();
+	//BF::spawn_random_ent();
+	for (int i = 0; i < PLAYER_COUNT; i++)
+	{
+		players.emplace_back(logo);
+		players[i].move(MAP_WIDTH / 2.f + i * 160, MAP_HEIGHT / 2.f);
+		players[i].setColor(sf::Color{ (sf::Uint8)(255 - i * 20), (sf::Uint8)(127 + i * 20), (sf::Uint8)(255 - i * 50) });
+	}
 
 	has_focus.test_and_set();
 
-	BF::start_ggpo();
+	//BF::start_ggpo();
 }
 
 void BF::clear()
@@ -166,12 +184,12 @@ void BF::advance()
 
 void BF::run()
 {
-	static int flags = 0;
+	int flags = 0;
 	updateInputs();
-	auto result = ggpo_add_local_input(session, local_ggpo_player, &local_inputs, sizeof(local_inputs));
+	auto result = ggpo_add_local_input(session, local_ggpo_player, &local_inputs, sizeof(player_inputs));
 	if (GGPO_SUCCEEDED(result))
 	{
-		result = ggpo_synchronize_input(session, &game_inputs[0], 2 * sizeof(game_inputs[0]), &flags);
+		result = ggpo_synchronize_input(session, game_inputs, PLAYER_COUNT * sizeof(player_inputs), &flags);
 		if (GGPO_SUCCEEDED(result))
 		{
 			advance();
@@ -183,7 +201,7 @@ void BF::draw(sf::RenderTarget& target)
 {
 	static sf::View player_view({ 0.f, 0.f , 1920, 1080 });
 
-	player_view.setCenter(players.size() > 0 ? players[0].getPosition() : player_view.getCenter());
+	player_view.setCenter(players.size() > 0 ? players[local_player_index].getPosition() : player_view.getCenter());
 	target.setView(player_view);
 	target.draw(background);
 	drawEntities(target);
@@ -283,7 +301,7 @@ void BF::checkHits()
 	std::erase_if(entities, [](BF::Entity& entity) { return entity.is_dead(); });
 }
 
-void BF::start_ggpo()
+void BF::start_ggpo(int player_num)
 {
 	GGPOSessionCallbacks cb{};
 
@@ -296,43 +314,50 @@ void BF::start_ggpo()
 	cb.on_event = BF::on_event;
 
 	ggpo_initialize_winsock();
-	auto result = ggpo_start_session(&session,         // the new session object
-		&cb,           // our callbacks
-		"BattleFriends",    // application name
-		PLAYER_COUNT,             // 2 players
-		sizeof(player_inputs),   // size of an input packet
-		8001);         // our local udp port
+	const int base_port = 8000;
+	int local_port = base_port + player_num;
+	ggpo_start_session(&session, &cb, "BattleFriends", PLAYER_COUNT, sizeof(player_inputs), local_port);
 
 	ggpo_set_disconnect_timeout(session, 0);
 
-	p1.size = sizeof(GGPOPlayer);
-	p2.size = sizeof(GGPOPlayer);
-	p1.player_num = 1;
-	p2.player_num = 2;
-	p1.type = GGPO_PLAYERTYPE_LOCAL;
-	p2.type = GGPO_PLAYERTYPE_REMOTE;
-	strcpy_s(p2.u.remote.ip_address, sizeof("127.0.0.1"), "127.0.0.1");  // ip addess of the player
-	p2.u.remote.port = 8002;               // port of that player
-
-	result = ggpo_add_player(session, &p1, &player_handles[0]);
-	result = ggpo_add_player(session, &p2, &player_handles[1]);
-	/////////// change this
-	local_ggpo_player = player_handles[0];
-	///////////
+	for (int i = 0; i < PLAYER_COUNT; i++)
+	{
+		ggpo_players[i].player_num = i + 1;
+		ggpo_players[i].size = sizeof(GGPOPlayer);
+		if (player_num == i + 1)
+		{
+			ggpo_players[i].type = GGPO_PLAYERTYPE_LOCAL;
+			ggpo_add_player(session, &ggpo_players[i], &ggpo_player_handles[i]);
+			ggpo_set_frame_delay(session, ggpo_player_handles[i], 1);
+			local_ggpo_player = ggpo_player_handles[i];
+			local_player_index = i;
+		}
+		else
+		{
+			ggpo_players[i].type = GGPO_PLAYERTYPE_REMOTE;
+			strcpy_s(ggpo_players[i].u.remote.ip_address, sizeof("127.0.0.1"), "127.0.0.1");
+			ggpo_players[i].u.remote.port = base_port + (i + 1);
+			ggpo_add_player(session, &ggpo_players[i], &ggpo_player_handles[i]);
+		}
+	}
 }
 
 void BF::spawn_random_ent()
 {
-	players.emplace_back(logo);
-	players.emplace_back(logo);
-	players[0].move(MAP_WIDTH / 2.f, MAP_HEIGHT / 2.f);
-	players[1].move(MAP_WIDTH / 2.f + 200.f, MAP_HEIGHT / 2.f + 200.f);
+	srand(time(0));
 	for (int i = 0; i < ENTITY_NUM; i++)
 	{
 		entities.emplace_back(logo);
 		entities[i].setColor(sf::Color{ 255, 100, 100 });
-		entities[i].move(MAP_WIDTH / 2.f + (i + 1) * 600, MAP_HEIGHT / 2.f + 600.f);
-		entities[i].setSpeed(-0.5, -0.5f);
+		entities[i].move(rand() % MAP_WIDTH, rand() % MAP_HEIGHT);
+		if (!(rand() % 10))
+		{
+			entities[i].stationary = true;
+		}
+		else
+		{
+			entities[i].setSpeed(((rand() % 11) - 5) / 20.0f, (rand() % 11) / 10.0f);
+		}
 	}
 }
 

@@ -13,7 +13,7 @@ namespace BF
 	extern std::vector<Entity> entities;
 	extern std::vector<Player> players;
 	extern std::vector<Projectile> projectiles;
-	extern player_inputs game_inputs[2];
+	extern player_inputs game_inputs[PLAYER_COUNT];
 	extern GGPOSession* session;
 	
 	// renderer variables
@@ -34,7 +34,7 @@ namespace BF
 	void free_buffer(void* buffer);
 
 	// utility functions
-	void start_ggpo();
+	void start_ggpo(int player_num);
 	void spawn_random_ent();
 	void loadTextures();
 	void updateEntities();
