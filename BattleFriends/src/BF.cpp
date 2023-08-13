@@ -62,7 +62,7 @@ void BF::updateInputs()
 		local_inputs.down = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
 		local_inputs.right = sf::Keyboard::isKeyPressed(sf::Keyboard::D);
 		local_inputs.shoot = sf::Mouse::isButtonPressed(sf::Mouse::Left);
-		local_inputs.mouse_pos = sf::Mouse::getPosition();
+		local_inputs.mouse_pos = sf::Mouse::getPosition(*(sf::RenderWindow*)BF::default_target); //TODO: change BF::init() argument to sf::RenderWindow*
 	}
 	else
 	{
@@ -183,7 +183,7 @@ void BF::draw(sf::RenderTarget& target)
 {
 	static sf::View player_view({ 0.f, 0.f , 1920, 1080 });
 
-	player_view.setCenter(players.size() > 0 ? players[1].getPosition() : player_view.getCenter());
+	player_view.setCenter(players.size() > 0 ? players[0].getPosition() : player_view.getCenter());
 	target.setView(player_view);
 	target.draw(background);
 	drawEntities(target);
@@ -317,7 +317,7 @@ void BF::start_ggpo()
 	result = ggpo_add_player(session, &p1, &player_handles[0]);
 	result = ggpo_add_player(session, &p2, &player_handles[1]);
 	/////////// change this
-	local_ggpo_player = player_handles[1];
+	local_ggpo_player = player_handles[0];
 	///////////
 }
 

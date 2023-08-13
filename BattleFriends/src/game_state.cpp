@@ -23,7 +23,6 @@ BF::game_state::game_state(size_t a, size_t b, size_t c)
 
 bool BF::save_game_state(unsigned char** buffer, int* len, int* checksum, int frame)
 {
-	
 	game_state gs(entities.size(), players.size(), projectiles.size());
 	*len = gs.total_byte_size;
 	*buffer = new unsigned char[*len];
