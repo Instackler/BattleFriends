@@ -314,9 +314,10 @@ void BF::start_ggpo(int player_num)
 	cb.on_event = BF::on_event;
 
 	ggpo_initialize_winsock();
-	const int base_port = 8000;
+	const int base_port = 6165;
 	int local_port = base_port + player_num;
 	ggpo_start_session(&session, &cb, "BattleFriends", PLAYER_COUNT, sizeof(player_inputs), local_port);
+	//ggpo_start_synctest(&session, &cb, (char*)"BattleFriends", PLAYER_COUNT, sizeof(player_inputs), 1);
 
 	ggpo_set_disconnect_timeout(session, 0);
 
@@ -328,7 +329,7 @@ void BF::start_ggpo(int player_num)
 		{
 			ggpo_players[i].type = GGPO_PLAYERTYPE_LOCAL;
 			ggpo_add_player(session, &ggpo_players[i], &ggpo_player_handles[i]);
-			ggpo_set_frame_delay(session, ggpo_player_handles[i], 1);
+			ggpo_set_frame_delay(session, ggpo_player_handles[i], 2);
 			local_ggpo_player = ggpo_player_handles[i];
 			local_player_index = i;
 		}
@@ -344,7 +345,7 @@ void BF::start_ggpo(int player_num)
 
 void BF::spawn_random_ent()
 {
-	srand(time(0));
+	//srand(time(0));
 	for (int i = 0; i < ENTITY_NUM; i++)
 	{
 		entities.emplace_back(logo);

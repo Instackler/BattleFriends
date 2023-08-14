@@ -1,6 +1,6 @@
 #pragma once
 
-#define ENTITY_NUM 10
+#define ENTITY_NUM 100
 #define PLAYER_COUNT 2
 const int MAP_WIDTH = 8192;
 const int MAP_HEIGHT = 8192;
