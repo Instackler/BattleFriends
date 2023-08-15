@@ -1,6 +1,5 @@
 #include <pch.h>
 #include <BF.h>
-#include <vector>
 
 
 int main()
@@ -8,7 +7,6 @@ int main()
 	//sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "BattleFriends", sf::Style::Fullscreen);
 	sf::RenderWindow window(sf::VideoMode(800, 450), "BattleFriends", sf::Style::Close);
 	SetForegroundWindow(window.getSystemHandle());
-	//window.setFramerateLimit(60);
 	window.setVerticalSyncEnabled(true);
 
 	BF::init(&window);

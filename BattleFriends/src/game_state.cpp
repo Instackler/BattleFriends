@@ -23,44 +23,24 @@ BF::game_state::game_state(size_t a, size_t b, size_t c)
 
 bool BF::save_game_state(unsigned char** buffer, int* len, int* checksum, int frame)
 {
-	//const std::lock_guard<std::mutex> save_game_state_lock(update_mutex);
-	while (true)
-	{
-		if (update_mutex.try_lock())
-		{
-			game_state gs(entities.size(), players.size(), projectiles.size());
-			*len = gs.total_byte_size;
-			*buffer = new unsigned char[*len];
-			std::memcpy(*buffer + gs.counts_offset, gs.counts_data, gs.counts_byte_size);
-			std::memcpy(*buffer + gs.entities_offset, gs.entity_data, gs.entities_byte_size);
-			std::memcpy(*buffer + gs.players_offset, gs.player_data, gs.players_byte_size);
-			std::memcpy(*buffer + gs.projectiles_offset, gs.projectile_data, gs.projectiles_byte_size);
-			update_mutex.unlock();
-			break;
-		}
-	}
+	game_state gs(entities.size(), players.size(), projectiles.size());
+	*len = gs.total_byte_size;
+	*buffer = new unsigned char[*len];
+	std::memcpy(*buffer + gs.counts_offset, gs.counts_data, gs.counts_byte_size);
+	std::memcpy(*buffer + gs.entities_offset, gs.entity_data, gs.entities_byte_size);
+	std::memcpy(*buffer + gs.players_offset, gs.player_data, gs.players_byte_size);
+	std::memcpy(*buffer + gs.projectiles_offset, gs.projectile_data, gs.projectiles_byte_size);
 	return true;
 }
 
 bool BF::load_game_state(unsigned char* buffer, int len)
 {
-	//const std::lock_guard<std::mutex> load_game_state_lock(update_mutex);
-	while (true)
-	{
-		if (update_mutex.try_lock())
-		{
-			size_t3 counts{};
-			std::memcpy(&counts, buffer, sizeof(counts));
-			game_state gs{ counts.entity_count, counts.player_count, counts.projectile_count };
-			entities = std::vector<Entity>((Entity*)(buffer + gs.entities_offset), (Entity*)(buffer + gs.entities_offset) + gs.counts.entity_count);
-			players = std::vector<Player>((Player*)(buffer + gs.players_offset), (Player*)(buffer + gs.players_offset) + gs.counts.player_count);
-			projectiles = std::vector<Projectile>((Projectile*)(buffer + gs.projectiles_offset),
-				(Projectile*)(buffer + gs.projectiles_offset) + gs.counts.projectile_count);
-			update_mutex.unlock();
-			break;
-		}
-	}
-
+	size_t3 counts{};
+	std::memcpy(&counts, buffer, sizeof(counts));
+	game_state gs{ counts.entity_count, counts.player_count, counts.projectile_count };
+	entities = std::vector<Entity>((Entity*)(buffer + gs.entities_offset), (Entity*)(buffer + gs.entities_offset) + gs.counts.entity_count);
+	players = std::vector<Player>((Player*)(buffer + gs.players_offset), (Player*)(buffer + gs.players_offset) + gs.counts.player_count);
+	projectiles = std::vector<Projectile>((Projectile*)(buffer + gs.projectiles_offset), (Projectile*)(buffer + gs.projectiles_offset) + gs.counts.projectile_count);
 	return true;
 }
 

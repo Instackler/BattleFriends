@@ -13,19 +13,18 @@ namespace BF
 	extern std::vector<Entity> entities;
 	extern std::vector<Player> players;
 	extern std::vector<Projectile> projectiles;
-	//extern std::vector<BF::player_inputs> game_inputs;
+	extern player_inputs game_inputs[PLAYER_COUNT];
 	extern GGPOSession* session;
 	
 	// renderer variables
 	extern sf::RenderTarget* default_target;
 	extern std::unordered_map<int, sf::Texture> textures;
 
-	extern std::mutex update_mutex;
-
 	// game loop functions
 	void init(sf::RenderTarget* target);
 	void process_event(sf::Event& event, sf::RenderWindow& window);
-	void update();
+	void advance();   //update w/o uploading local inputs, use only for ggpo advance_frame() callback
+	void run();
 	void draw(sf::RenderTarget& target = *default_target);
 	void draw_debug_hud(sf::RenderTarget& target = *default_target);
 	void clear();
@@ -35,7 +34,7 @@ namespace BF
 	void free_buffer(void* buffer);
 
 	// utility functions
-	void start_ggpo();
+	void start_ggpo(int player_num);
 	void spawn_random_ent();
 	void loadTextures();
 	void updateEntities();
@@ -43,7 +42,7 @@ namespace BF
 	void updateProjectiles();
 	void checkCollisions();
 	void checkHits();
-	void checkInputs();
+	void updateInputs();
 	void physics_loop();
 	size_t get_Entity_count();
 	size_t get_Projectile_count();

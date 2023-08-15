@@ -24,7 +24,7 @@ namespace BF
 
 	private:
 		void applyInputs(const player_inputs& inputs);
-		void shoot();
+		void shoot(const sf::Vector2i mouse_pos);
 
 	private:
 		unsigned int cooldown = 20;
