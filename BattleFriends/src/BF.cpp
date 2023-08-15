@@ -58,13 +58,13 @@ void BF::physics_loop()
 	{
 		physics_clock.restart();
 		target_tp += time_between_frames;          // calculate target point in time
-		std::this_thread::sleep_until(target_tp - threshold);  // sleep short of that time point
 		// do stuff
-		ggpo_idle(session, tick_time);
+		ggpo_idle(session, tick_time - 1);
 		{
 			const std::lock_guard<std::mutex> physics_lock(update_mutex);
 			run();
 		}
+		std::this_thread::sleep_until(target_tp - threshold);  // sleep short of that time point
 		while (std::chrono::high_resolution_clock::now() < target_tp) {} // busy wait
 		physics_time.store(physics_clock.restart());
 	} while (running.test());
