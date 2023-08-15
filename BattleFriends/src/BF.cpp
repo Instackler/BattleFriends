@@ -26,16 +26,48 @@ std::atomic_flag has_focus;
 std::atomic_flag running;
 std::atomic<sf::Time> physics_time;
 std::thread* physics_thread_ptr = nullptr;
+std::mutex update_mutex;
 
+/*
+void BF::physics_loop()
+{
+	static sf::Clock physics_clock;
+	static sf::Clock frame_clock;
+	do
+	{
+		physics_clock.restart();
+		frame_clock.restart();
+		ggpo_idle(session, tick_time);
+		{
+			const std::lock_guard<std::mutex> physics_lock(update_mutex);
+			run();
+		}
+		Sleep(tick_time - frame_clock.restart().asMilliseconds());
+		physics_time.store(physics_clock.restart());
+	} while (running.test());
+}
+*/
 
 void BF::physics_loop()
 {
 	static sf::Clock physics_clock;
-	physics_clock.restart();
-	//sf::sleep(sf::milliseconds(2));
-	ggpo_idle(session, 3);
-	run();
-	physics_time.store(physics_clock.restart());
+	auto time_between_frames = std::chrono::microseconds(std::chrono::seconds(1)) / tick_rate;
+	auto target_tp = std::chrono::high_resolution_clock::now();
+	std::chrono::microseconds threshold(100);
+	do
+	{
+		physics_clock.restart();
+		target_tp += time_between_frames;          // calculate target point in time
+		std::this_thread::sleep_until(target_tp - threshold);  // sleep short of that time point
+		// do stuff
+		ggpo_idle(session, tick_time);
+		{
+			const std::lock_guard<std::mutex> physics_lock(update_mutex);
+			run();
+		}
+		while (std::chrono::high_resolution_clock::now() < target_tp) {} // busy wait
+		physics_time.store(physics_clock.restart());
+	} while (running.test());
 }
 
 void BF::process_event(sf::Event& event, sf::RenderWindow& window)
@@ -130,6 +162,9 @@ void BF::updateProjectiles()
 
 void BF::init(sf::RenderTarget* target)
 {
+	TIMECAPS tc;
+	timeGetDevCaps(&tc, sizeof(tc));
+	timeBeginPeriod(tc.wPeriodMin);
 	entities.reserve(100);
 	players.reserve(32);
 	projectiles.reserve(1000);
@@ -156,15 +191,21 @@ void BF::init(sf::RenderTarget* target)
 		players[i].setColor(sf::Color{ (sf::Uint8)(255 - i * 20), (sf::Uint8)(127 + i * 20), (sf::Uint8)(255 - i * 50) });
 	}
 
+	running.test_and_set();
+	static std::thread physics_thread(BF::physics_loop);
+	physics_thread_ptr = &physics_thread;
 	has_focus.test_and_set();
-
-	//BF::start_ggpo();
 }
 
 void BF::clear()
 {
+	running.clear();
+	physics_thread_ptr->join();
 	ggpo_close_session(session);
 	ggpo_deinitialize_winsock();
+	TIMECAPS tc;
+	timeGetDevCaps(&tc, sizeof(tc));
+	timeEndPeriod(tc.wPeriodMin);
 
 	entities.clear();
 	players.clear();
@@ -201,15 +242,25 @@ void BF::draw(sf::RenderTarget& target)
 {
 	static sf::View player_view({ 0.f, 0.f , 1920, 1080 });
 
-	player_view.setCenter(players.size() > 0 ? players[local_player_index].getPosition() : player_view.getCenter());
-	target.setView(player_view);
-	target.draw(background);
-	drawEntities(target);
-	drawPlayers(target);
-	drawProjectiles(target);
-	target.setView(target.getDefaultView());
-	minimap::draw(target);
-	draw_debug_hud();
+	while (true)
+	{
+		if (update_mutex.try_lock())
+		{
+			player_view.setCenter(players.size() > 0 ? players[local_player_index].getPosition() : player_view.getCenter());
+			target.setView(player_view);
+			target.draw(background);
+			drawEntities(target);
+			drawPlayers(target);
+			drawProjectiles(target);
+			target.setView(target.getDefaultView());
+			minimap::draw(target);
+			draw_debug_hud();
+
+			update_mutex.unlock();
+			break;
+		}
+		//TODO: wait before trying again
+	}
 }
 
 void BF::drawEntities(sf::RenderTarget& target)
@@ -316,6 +367,8 @@ void BF::start_ggpo(int player_num)
 	ggpo_initialize_winsock();
 	const int base_port = 6165;
 	int local_port = base_port + player_num;
+
+	const std::lock_guard<std::mutex> start_ggpo_lock(update_mutex);
 	ggpo_start_session(&session, &cb, "BattleFriends", PLAYER_COUNT, sizeof(player_inputs), local_port);
 	//ggpo_start_synctest(&session, &cb, (char*)"BattleFriends", PLAYER_COUNT, sizeof(player_inputs), 1);
 
