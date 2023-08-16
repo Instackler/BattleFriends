@@ -52,8 +52,8 @@ void BF::physics_loop()
 {
 	static sf::Clock physics_clock;
 	auto time_between_frames = std::chrono::microseconds(std::chrono::seconds(1)) / tick_rate;
-	auto target_tp = std::chrono::high_resolution_clock::now();
-	std::chrono::microseconds threshold(100);
+	auto target_tp = std::chrono::steady_clock::now();
+	std::chrono::microseconds threshold(50);
 	do
 	{
 		physics_clock.restart();
@@ -65,7 +65,7 @@ void BF::physics_loop()
 			run();
 		}
 		std::this_thread::sleep_until(target_tp - threshold);  // sleep short of that time point
-		while (std::chrono::high_resolution_clock::now() < target_tp) {} // busy wait
+		while (std::chrono::steady_clock::now() < target_tp) {} // busy wait
 		physics_time.store(physics_clock.restart());
 	} while (running.test());
 }
@@ -92,7 +92,9 @@ void BF::process_event(sf::Event& event, sf::RenderWindow& window)
 	{
 		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Num1 + i && has_focus.test())
 		{
+			#ifndef DISABLE_GGPO
 			start_ggpo(i + 1);
+			#endif // !DISABLE_GGPO
 		}
 	}
 }
@@ -135,7 +137,11 @@ void BF::updatePlayers()
 	int i = 0;
 	for (auto&& player : players)
 	{
+		#ifndef DISABLE_GGPO
 		player.update(game_inputs[i++]);
+		#else
+		player.update(local_inputs);
+		#endif // !DISABLE_GGPO
 	}
 }
 
@@ -201,8 +207,11 @@ void BF::clear()
 {
 	running.clear();
 	physics_thread_ptr->join();
-	ggpo_close_session(session);
-	ggpo_deinitialize_winsock();
+	if (session != nullptr)
+	{
+		ggpo_close_session(session);
+		ggpo_deinitialize_winsock();
+	}
 	TIMECAPS tc;
 	timeGetDevCaps(&tc, sizeof(tc));
 	timeEndPeriod(tc.wPeriodMin);
@@ -227,11 +236,13 @@ void BF::run()
 {
 	int flags = 0;
 	updateInputs();
-	auto result = ggpo_add_local_input(session, local_ggpo_player, &local_inputs, sizeof(player_inputs));
-	if (GGPO_SUCCEEDED(result))
+	#ifndef DISABLE_GGPO
+	if (!ggpo_add_local_input(session, local_ggpo_player, &local_inputs, sizeof(player_inputs)))
+	#endif // !DISABLE_GGPO
 	{
-		result = ggpo_synchronize_input(session, game_inputs, PLAYER_COUNT * sizeof(player_inputs), &flags);
-		if (GGPO_SUCCEEDED(result))
+		#ifndef DISABLE_GGPO
+		if (!ggpo_synchronize_input(session, game_inputs, PLAYER_COUNT * sizeof(player_inputs), &flags))
+		#endif // !DISABLE_GGPO
 		{
 			advance();
 		}
@@ -370,7 +381,6 @@ void BF::start_ggpo(int player_num)
 
 	const std::lock_guard<std::mutex> start_ggpo_lock(update_mutex);
 	ggpo_start_session(&session, &cb, "BattleFriends", PLAYER_COUNT, sizeof(player_inputs), local_port);
-	//ggpo_start_synctest(&session, &cb, (char*)"BattleFriends", PLAYER_COUNT, sizeof(player_inputs), 1);
 
 	ggpo_set_disconnect_timeout(session, 0);
 
