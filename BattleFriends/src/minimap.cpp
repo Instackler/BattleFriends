@@ -24,12 +24,14 @@ void minimap::init()
 	unsigned int screen_width = BF::default_target->getSize().x;
 	unsigned int screen_height = BF::default_target->getSize().y;
 	float offset = screen_height * MINIMAP_OFFSET;
+	float scale = screen_height * MINIMAP_SCALE / std::max(MAP_WIDTH, MAP_HEIGHT);
+	float minimap_width = scale * MAP_WIDTH;
 
 	texture.create(MAP_WIDTH, MAP_HEIGHT); //TODO: add error checking
 	texture.setSmooth(true);
 	minimap_sprite.setTexture(texture.getTexture());
-	minimap_sprite.setPosition(screen_width - MINIMAP_WIDTH * screen_height - offset, offset);
-	minimap_sprite.setScale(MINIMAP_SCALE * screen_height, MINIMAP_SCALE * screen_height);
+	minimap_sprite.setPosition(screen_width - minimap_width - offset, offset);
+	minimap_sprite.setScale(scale, scale);
 	minimap_sprite.setColor(sf::Color(255, 255, 255, 100));
 }
 
