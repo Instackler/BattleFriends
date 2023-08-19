@@ -9,6 +9,11 @@ int main()
 	SetForegroundWindow(window.getSystemHandle());
 	window.setVerticalSyncEnabled(true);
 
+	tinytmx::Map* map = new tinytmx::Map();
+	std::string fileName = "resources/map.tmx";
+	map->ParseFile(fileName);
+	delete map;
+
 	BF::init(&window);
 
 	sf::Event event;

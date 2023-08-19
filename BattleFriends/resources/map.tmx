@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="20">
+ <tileset firstgid="1" source="mine.tsx"/>
+ <objectgroup id="2" name="Object Layer 1">
+  <object id="13" name="bedrock" gid="1" x="366.011" y="416.244" width="48.5811" height="44.5475" rotation="79.6309"/>
+  <object id="15" name="bedrock" gid="1" x="642.297" y="154.731" width="49.9541" height="44.5475" rotation="21.9553"/>
+  <object id="17" gid="1" x="396" y="230" width="16" height="16"/>
+  <object id="19" gid="2" x="554" y="447" width="150" height="150"/>
+ </objectgroup>
+</map>
