@@ -18,7 +18,7 @@ namespace BF
 	
 	// renderer variables
 	extern sf::RenderTarget* default_target;
-	extern std::unordered_map<int, sf::Texture> textures;
+	extern std::unordered_map<std::string, sf::Texture> textures;
 
 	// game loop functions
 	void init(sf::RenderTarget* target);

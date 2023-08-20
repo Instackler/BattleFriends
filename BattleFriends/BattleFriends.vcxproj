@@ -144,7 +144,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <AdditionalDependencies>sfml-window-s-d.lib;sfml-system-s-d.lib;opengl32.lib;freetype.lib;sfml-graphics-s-d.lib;winmm.lib;gdi32.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;sfml-audio-s-d.lib;ws2_32.lib;sfml-network-s-d.lib;sfml-main-d.lib;GGPO-d.lib;tinytmx-d.lib;tinyxml2-d.lib;zstd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
@@ -154,6 +154,8 @@
     </ProjectReference>
     <ResourceCompile>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -216,6 +218,8 @@
     </ProjectReference>
     <ResourceCompile>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -252,7 +256,6 @@
     <ClInclude Include="src\include\Player.h" />
     <ClInclude Include="src\include\Projectile.h" />
     <ClInclude Include="src\include\BF.h" />
-    <ClInclude Include="src\include\resource.h" />
     <ClInclude Include="src\include\game_state.h" />
   </ItemGroup>
   <ItemGroup>
@@ -260,20 +263,22 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\bedrock.png" />
+    <Image Include="resources\png1.png" />
     <Image Include="resources\proj.png" />
+    <Image Include="resources\test.png" />
+    <Image Include="resources\test2.png" />
+    <Image Include="src\include\bedrock.png" />
+    <Image Include="src\include\logo.png" />
+    <Image Include="src\include\proj.png" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="resources\fonts\raleway\Raleway-Bold.ttf" />
     <Font Include="resources\fonts\raleway\Raleway-ExtraBold.ttf" />
     <Font Include="resources\fonts\raleway\Raleway-SemiBold.ttf" />
+    <Font Include="src\include\fonts\raleway\Raleway-SemiBold.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="resources\BattleFriends.rc">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ResourceCompile>
+    <ResourceCompile Include="resources\resources.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

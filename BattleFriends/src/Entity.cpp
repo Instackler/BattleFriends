@@ -3,7 +3,7 @@
 #include <BF.h>
 
 
-BF::Entity::Entity(int textureID)
+BF::Entity::Entity(const std::string& textureID)
 	:m_textureID(textureID)
 {
 	setTexture(textures[textureID]);

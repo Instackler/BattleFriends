@@ -12,8 +12,7 @@ namespace BF
 	class Player : public Entity
 	{
 	public:
-		//Player(const char* filename);
-		Player(int textureID);
+		Player(const std::string& textureID);
 		Player(const Player&);
 		Player() = delete;
 		Player(Player&& other) noexcept;

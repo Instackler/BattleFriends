@@ -7,6 +7,5 @@
 #include <Windows.h>
 
 #include <SFML/Graphics.hpp>
-#include <resource.h>
 #include <ggponet.h>
 #include <tinytmx\tinytmx.hpp>

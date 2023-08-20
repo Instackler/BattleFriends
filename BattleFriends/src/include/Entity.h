@@ -6,8 +6,7 @@ namespace BF
 	class Entity : public sf::Sprite
 	{
 	public:
-		//Entity(const char* filename);
-		Entity(int textureID);
+		Entity(const std::string& textureID);
 		Entity(const Entity&);
 		Entity() = delete;
 		~Entity();
@@ -27,8 +26,8 @@ namespace BF
 		bool out_of_bounds(sf::FloatRect area = sf::FloatRect{0.f, 0.f, (float)MAP_WIDTH, (float)MAP_HEIGHT});
 
 	protected:
+		std::string m_textureID;
 		float radius = 1.f;
-		int m_textureID = 0;
 		float m_SpeedX = 0.f, m_SpeedY = 0.f;
 		int health = 100;
 

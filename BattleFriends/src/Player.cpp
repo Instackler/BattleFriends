@@ -3,15 +3,7 @@
 #include <BF.h>
 
 
-/*
-BF::Player::Player(const char* filename)
-	:Entity(filename)
-{
-	// TODO: add logging		std::cout << "Created Player" << std::endl;
-}
-*/
-
-BF::Player::Player(int textureID)
+BF::Player::Player(const std::string& textureID)
 	:Entity(textureID)
 {
 	// TODO: add logging		std::cout << "Created Player" << std::endl;

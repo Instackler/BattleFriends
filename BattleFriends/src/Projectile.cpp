@@ -11,7 +11,7 @@ BF::Projectile::Projectile(const Projectile& other)
 }
 
 BF::Projectile::Projectile(const sf::Vector2f& pos, const sf::Vector2f& speed)
-	:Entity(proj)
+	:Entity("proj")
 {
 	health = 1;
 	setPosition(pos.x, pos.y);

@@ -19,7 +19,7 @@ int local_player_index = 0;
 // renderer variables
 sf::RenderTarget* BF::default_target = nullptr;
 sf::Sprite background;
-std::unordered_map<int, sf::Texture> BF::textures;
+std::unordered_map<std::string, sf::Texture> BF::textures;
 std::atomic_flag has_focus;
 
 // Physics thread vars
@@ -151,8 +151,10 @@ void BF::loadTextures()
 	EnumResourceNamesA(NULL, "PNG",
 		[](HMODULE hModule, LPCTSTR lpType, LPTSTR lpName, LONG_PTR lParam) -> BOOL
 		{
-			BF::loadResource((int)lpName, lpType, *((sf::Texture*)lParam));
-			textures.emplace((int)lpName, *((sf::Texture*)lParam));
+			BF::loadResource(lpName, lpType, *((sf::Texture*)lParam));
+			std::string name{ lpName };
+			std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+			textures.emplace(name, *((sf::Texture*)lParam));
 			return true; // Continue enumeration
 		},
 		(LONG_PTR)&tex);
@@ -180,8 +182,8 @@ void BF::init(sf::RenderTarget* target)
 	///////////////////////////////////// load the map
 	float background_scale = 10.f;
 	background.setTextureRect(sf::IntRect{ 0, 0, MAP_WIDTH / (int)background_scale, MAP_HEIGHT / (int)background_scale });
-	textures[bedrock].setRepeated(true);
-	background.setTexture(textures[bedrock]);
+	textures["bedrock"].setRepeated(true);
+	background.setTexture(textures["bedrock"]);
 	background.setScale(background_scale, background_scale);
 	background.setColor(sf::Color(80, 80, 80, 255));
 	/////////////////////////////////////////////////////
@@ -192,7 +194,7 @@ void BF::init(sf::RenderTarget* target)
 	//BF::spawn_random_ent();
 	for (int i = 0; i < PLAYER_COUNT; i++)
 	{
-		players.emplace_back(logo);
+		players.emplace_back("logo");
 		players[i].move(MAP_WIDTH / 2.f + i * 160, MAP_HEIGHT / 2.f);
 		players[i].setColor(sf::Color{ (sf::Uint8)(255 - i * 20), (sf::Uint8)(127 + i * 20), (sf::Uint8)(255 - i * 50) });
 	}
@@ -411,7 +413,7 @@ void BF::spawn_random_ent()
 	//srand(time(0));
 	for (int i = 0; i < ENTITY_NUM; i++)
 	{
-		entities.emplace_back(logo);
+		entities.emplace_back("logo");
 		entities[i].setColor(sf::Color{ 255, 100, 100 });
 		entities[i].move(rand() % MAP_WIDTH, rand() % MAP_HEIGHT);
 		if (!(rand() % 10))
@@ -428,7 +430,7 @@ void BF::spawn_random_ent()
 bool init_debug_hud(sf::Text& info, sf::Text& Esc_hint)
 {
 	static sf::Font font;
-	BF::loadResource(Raleway_Semibold, "TTF", font);
+	BF::loadResource("Raleway_Semibold", "TTF", font);
 
 	info.setFont(font);
 	info.setCharacterSize(BF::default_target->getSize().y * HUD_SCALE);
