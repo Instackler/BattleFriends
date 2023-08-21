@@ -28,6 +28,23 @@ std::atomic<sf::Time> physics_time;
 std::thread* physics_thread_ptr = nullptr;
 std::mutex update_mutex;
 
+
+void BF::loadMap(const std::string& name, const char* type, tinytmx::Map& map)
+{
+	HRSRC hResource = FindResourceA(NULL, (LPCSTR)name.c_str(), type);
+	if (hResource != NULL)
+	{
+		DWORD resourceSize = SizeofResource(NULL, hResource);
+		HGLOBAL hResourceData = LoadResource(NULL, hResource);
+		if (hResourceData != NULL)
+		{
+			LPVOID pData = LockResource(hResourceData);
+			map.ParseText((char*)pData);
+			FreeResource(hResourceData);
+		}
+	}
+}
+
 /*
 void BF::physics_loop()
 {

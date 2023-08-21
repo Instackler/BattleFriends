@@ -1,27 +1,6 @@
 #include <pch.h>
 #include <BF.h>
 
-bool loadResourceByName(const char* name, const char* type, sf::Texture &obj)
-{
-	HRSRC hResource = FindResourceA(NULL, name, type);
-	if (hResource != NULL)
-	{
-		DWORD resourceSize = SizeofResource(NULL, hResource);
-		HGLOBAL hResourceData = LoadResource(NULL, hResource);
-		if (hResourceData != NULL)
-		{
-			LPVOID pData = LockResource(hResourceData);
-			obj.loadFromMemory(pData, resourceSize);
-			FreeResource(hResourceData);
-			// TODO: add logging
-			return true;
-		}
-		// TODO: add logging
-		return false;
-	}
-	// TODO: add logging
-	return false;
-}
 
 int main()
 {
@@ -30,10 +9,8 @@ int main()
 	SetForegroundWindow(window.getSystemHandle());
 	window.setVerticalSyncEnabled(true);
 
-	tinytmx::Map* map = new tinytmx::Map();
-	std::string fileName = "resources/map.tmx";
-	map->ParseFile(fileName);
-	delete map;
+	tinytmx::Map map;
+	BF::loadMap("map", "tmx", map);
 
 	BF::init(&window);
 

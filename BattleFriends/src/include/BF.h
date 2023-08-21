@@ -37,6 +37,7 @@ namespace BF
 	void start_ggpo(int player_num);
 	void spawn_random_ent();
 	void loadTextures();
+	void loadMap(const std::string& name, const char* type, tinytmx::Map& map);
 	void updateEntities();
 	void updatePlayers();
 	void updateProjectiles();

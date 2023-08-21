@@ -280,6 +280,9 @@
   <ItemGroup>
     <ResourceCompile Include="resources\resources.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\map.tmx" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
