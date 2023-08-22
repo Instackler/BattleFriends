@@ -16,6 +16,7 @@ BF::Entity::Entity(const std::string& textureID)
 	// TODO: add logging		std::cout << "Created Entity" << std::endl;
 }
 
+
 BF::Entity::Entity(const Entity& other)
 	:sf::Sprite(other)
 {
@@ -32,7 +33,6 @@ BF::Entity::~Entity()
 {
 	// TODO: add logging		std::cout << "Destroyed Entity" << std::endl;
 }
-
 
 BF::Entity::Entity(Entity&& other) noexcept
 	:sf::Sprite(std::move(other))
@@ -52,6 +52,7 @@ BF::Entity& BF::Entity::operator=(const Entity& other)
 	// TODO: add logging		std::cout << "Entity& =\n";
 	if (this != &other)
 	{
+		sf::Sprite::operator=(other);
 		radius = other.radius;
 		m_textureID = other.m_textureID;
 		setTexture(textures[m_textureID]);
@@ -63,11 +64,12 @@ BF::Entity& BF::Entity::operator=(const Entity& other)
 	return *this;
 }
 
-BF::Entity& BF::Entity::operator=(const Entity&& other) noexcept
+BF::Entity& BF::Entity::operator=(Entity&& other) noexcept
 {
 	// TODO: add logging		std::cout << "Entity&& =\n";
 	if (this != &other)
 	{
+		sf::Sprite::operator=(std::move(other));
 		radius = other.radius;
 		m_textureID = other.m_textureID;
 		setTexture(textures[m_textureID]);
@@ -78,6 +80,7 @@ BF::Entity& BF::Entity::operator=(const Entity&& other) noexcept
 	}
 	return *this;
 }
+
 
 void BF::Entity::bounce()
 {

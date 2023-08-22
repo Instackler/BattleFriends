@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="1" height="1" tilewidth="10" tileheight="10" infinite="0" nextlayerid="4" nextobjectid="2">
- <layer id="3" name="Tile Layer 1" width="1" height="1">
-  <data encoding="csv">
-0
-</data>
- </layer>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="1" height="1" tilewidth="8000" tileheight="8000" infinite="0" nextlayerid="3" nextobjectid="19">
+ <tileset firstgid="1" name="tileset" tilewidth="150" tileheight="150" tilecount="4" columns="0">
+  <grid orientation="orthogonal" width="1" height="1"/>
+  <tile id="0">
+   <image width="16" height="16" source="bedrock.png"/>
+  </tile>
+  <tile id="1">
+   <image width="150" height="150" source="logo.png"/>
+  </tile>
+  <tile id="2">
+   <image width="10" height="10" source="proj.png"/>
+  </tile>
+  <tile id="4">
+   <image width="150" height="150" source="logo3.png"/>
+  </tile>
+ </tileset>
+ <objectgroup id="2" name="Object Layer 1">
+  <object id="8" gid="2" x="3209.41" y="4098.56" width="1677.88" height="115.091"/>
+  <object id="16" gid="1" x="2265" y="4322" width="485" height="498"/>
+  <object id="18" gid="3" x="5307" y="5181" width="98" height="2314"/>
+ </objectgroup>
 </map>

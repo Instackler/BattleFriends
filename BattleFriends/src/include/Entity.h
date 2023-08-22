@@ -11,8 +11,8 @@ namespace BF
 		Entity() = delete;
 		~Entity();
 		Entity(Entity&& other) noexcept;
-		Entity& operator= (const Entity&);
-		Entity& operator=(const Entity&&) noexcept;
+		Entity& operator=(const Entity&);
+		Entity& operator=(Entity&&) noexcept;
 
 		void bounce();
 		void setSpeed(float x, float y);

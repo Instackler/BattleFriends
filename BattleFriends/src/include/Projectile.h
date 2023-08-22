@@ -11,7 +11,7 @@ namespace BF
 		Projectile(const sf::Vector2f& pos, const sf::Vector2f& speed);
 		Projectile(Projectile&& other) noexcept;
 		Projectile& operator= (const Projectile&);
-		Projectile& operator= (const Projectile&&) noexcept;
+		Projectile& operator= (Projectile&&) noexcept;
 		void collide(Entity& other) override;
 
 	private:

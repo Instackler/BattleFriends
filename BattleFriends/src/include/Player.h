@@ -17,6 +17,7 @@ namespace BF
 		Player() = delete;
 		Player(Player&& other) noexcept;
 		Player& operator= (const Player&) = default;
+
 		~Player();
 
 		void update(const player_inputs& inputs);

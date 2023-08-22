@@ -25,12 +25,12 @@ BF::Projectile::Projectile(Projectile&& other) noexcept
 	damage = other.damage;
 }
 
-BF::Projectile& BF::Projectile::operator=(const Projectile&& other) noexcept
+BF::Projectile& BF::Projectile::operator=(Projectile&& other) noexcept
 {
 	// TODO: add logging		std::cout << "Projectile&& =\n";
 	if (this != &other)
 	{
-		Entity::operator=((const Entity&&)other);
+		Entity::operator=(std::move(other));
 		damage = other.damage;
 	}
 	return *this;
@@ -41,7 +41,7 @@ BF::Projectile& BF::Projectile::operator=(const Projectile& other)
 	// TODO: add logging		std::cout << "Projectile& =\n";
 	if (this != &other)
 	{
-		Entity::operator=((const Entity&)other);
+		Entity::operator=(other);
 		damage = other.damage;
 	}
 	return *this;
