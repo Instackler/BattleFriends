@@ -16,7 +16,8 @@ namespace BF
 		Player(const Player&);
 		Player() = delete;
 		Player(Player&& other) noexcept;
-		Player& operator= (const Player&) = default;
+		Player& operator= (const Player&);
+		Player& operator= (Player&&) noexcept;
 
 		~Player();
 

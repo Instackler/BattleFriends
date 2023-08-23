@@ -16,8 +16,8 @@
   </tile>
  </tileset>
  <objectgroup id="2" name="Object Layer 1">
-  <object id="8" gid="2" x="3209.41" y="4098.56" width="1677.88" height="115.091"/>
-  <object id="16" gid="1" x="2265" y="4322" width="485" height="498"/>
-  <object id="18" gid="3" x="5307" y="5181" width="98" height="2314"/>
+  <object id="8" gid="2" x="3265.41" y="3346.56" width="1677.88" height="115.091"/>
+  <object id="16" gid="1" x="2089" y="4322" width="485" height="498"/>
+  <object id="18" gid="3" x="5595" y="5293" width="98" height="2314"/>
  </objectgroup>
 </map>

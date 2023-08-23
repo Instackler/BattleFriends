@@ -227,6 +227,7 @@
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\ggpo_callbacks.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Map.cpp" />
     <ClCompile Include="src\minimap.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -251,6 +252,7 @@
     <ClInclude Include="src\include\Entity.h" />
     <ClInclude Include="src\include\ggpo_callbacks.h" />
     <ClInclude Include="src\include\loadResource.h" />
+    <ClInclude Include="src\include\Map.h" />
     <ClInclude Include="src\include\minimap.h" />
     <ClInclude Include="src\include\pch.h" />
     <ClInclude Include="src\include\Player.h" />

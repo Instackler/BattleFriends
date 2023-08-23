@@ -9,6 +9,9 @@ std::vector<BF::Projectile> BF::projectiles;
 BF::player_inputs BF::game_inputs[PLAYER_COUNT] = {};
 BF::player_inputs local_inputs = {};
 
+// Non-game state
+std::vector<BF::Entity> BF::map_objects;
+
 // ggpo variables
 GGPOSession* BF::session;
 GGPOPlayer ggpo_players[PLAYER_COUNT] = {};
@@ -27,23 +30,6 @@ std::atomic_flag running;
 std::atomic<sf::Time> physics_time;
 std::thread* physics_thread_ptr = nullptr;
 std::mutex update_mutex;
-
-
-void BF::loadMap(const std::string& name, const char* type, tinytmx::Map& map)
-{
-	HRSRC hResource = FindResourceA(NULL, (LPCSTR)name.c_str(), type);
-	if (hResource != NULL)
-	{
-		DWORD resourceSize = SizeofResource(NULL, hResource);
-		HGLOBAL hResourceData = LoadResource(NULL, hResource);
-		if (hResourceData != NULL)
-		{
-			LPVOID pData = LockResource(hResourceData);
-			map.ParseText((char*)pData);
-			FreeResource(hResourceData);
-		}
-	}
-}
 
 /*
 void BF::physics_loop()
@@ -74,7 +60,7 @@ void BF::physics_loop()
 	do
 	{
 		physics_clock.restart();
-		target_tp += time_between_frames;          // calculate target point in time
+		target_tp += time_between_frames;  // calculate target point in time
 		// do stuff
 		ggpo_idle(session, tick_time - 1);
 		{
@@ -203,6 +189,7 @@ void BF::init(sf::RenderTarget* target)
 	background.setTexture(textures["bedrock"]);
 	background.setScale(background_scale, background_scale);
 	background.setColor(sf::Color(80, 80, 80, 255));
+	BF::loadMap();
 	/////////////////////////////////////////////////////
 
 	default_target = target;
@@ -279,12 +266,13 @@ void BF::draw(sf::RenderTarget& target)
 			player_view.setCenter(players.size() > 0 ? players[local_player_index].getPosition() : player_view.getCenter());
 			target.setView(player_view);
 			target.draw(background);
+			drawMap(target);
 			drawEntities(target);
 			drawPlayers(target);
 			drawProjectiles(target);
 			target.setView(target.getDefaultView());
 			minimap::draw(target);
-			draw_debug_hud();
+			draw_debug_hud(target);
 
 			update_mutex.unlock();
 			break;
@@ -298,6 +286,14 @@ void BF::drawEntities(sf::RenderTarget& target)
 	for (auto&& entity : entities)
 	{
 		target.draw(entity);
+	}
+}
+
+void BF::drawMap(sf::RenderTarget& target)
+{
+	for (auto&& map_object : map_objects)
+	{
+		target.draw(map_object);
 	}
 }
 
@@ -319,16 +315,7 @@ void BF::drawProjectiles(sf::RenderTarget& target)
 
 void BF::checkCollisions()
 {
-	for (int i = 0; i < (int)entities.size() - 1; i++)
-	{
-		for (int j = i + 1; j < entities.size(); j++)   //for each unique pair
-		{
-			if (entities[i].intersects(entities[j]))
-				entities[i].collide(entities[j]);
-		}
-	}
-
-	for (auto&& player : players)
+	for (auto&& player : players) //check player - entity collisions
 	{
 		for (auto&& entity : entities)
 		{
@@ -339,7 +326,7 @@ void BF::checkCollisions()
 		}
 	}
 
-	for (int i = 0; i < (int)players.size() - 1; i++)
+	for (int i = 0; i < (int)players.size() - 1; i++) //check player - player collisions
 	{
 		for (int j = i + 1; j < players.size(); j++)   //for each unique pair
 		{
@@ -347,14 +334,32 @@ void BF::checkCollisions()
 				players[i].collide(players[j]);
 		}
 	}
+
+	for (auto&& projectile : projectiles) //check projectile - map collisions
+	{
+		for (auto&& map_object : map_objects)
+		{
+			if (projectile.getGlobalBounds().intersects(map_object.getGlobalBounds()))
+			{
+				projectile.collide_with_map();
+			}
+		}
+	}
+
+	for (auto&& player : players) //check player - map collisions
+	{
+		for (auto&& map_object : map_objects)
+		{
+			if (player.getGlobalBounds().intersects(map_object.getGlobalBounds()))
+			{
+				player.collide(map_object);
+			}
+		}
+	}
 }
 
 void BF::checkHits()
 {
-	std::erase_if(projectiles, [](BF::Projectile& projectile) { return projectile.out_of_bounds(); });
-	//std::erase_if(players, [](BF::Player& player) { return player.out_of_bounds(); });
-	//std::erase_if(entities, [](BF::Entity& entity) { return entity.out_of_bounds(); });
-
 	for (auto&& player : players)
 	{
 		for (auto&& projectile : projectiles)
@@ -366,18 +371,7 @@ void BF::checkHits()
 		}
 	}
 
-	for (auto&& entity : entities)
-	{
-		for (auto&& projectile : projectiles)
-		{
-			if (entity.intersects(projectile))
-			{
-				projectile.collide(entity);
-			}
-		}
-	}
-
-	std::erase_if(projectiles, [](BF::Projectile& projectile) { return projectile.is_dead(); });
+	std::erase_if(projectiles, [](BF::Projectile& projectile) { return projectile.out_of_bounds() || projectile.is_dead(); });
 	std::erase_if(players, [](BF::Player& player) { return player.is_dead(); });
 	std::erase_if(entities, [](BF::Entity& entity) { return entity.is_dead(); });
 }
@@ -385,8 +379,6 @@ void BF::checkHits()
 void BF::start_ggpo(int player_num)
 {
 	GGPOSessionCallbacks cb{};
-
-	/* fill in all callback functions */
 	cb.begin_game = BF::begin_game;
 	cb.advance_frame = BF::advance_frame_callback;
 	cb.load_game_state = BF::load_game_state;

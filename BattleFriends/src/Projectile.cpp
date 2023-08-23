@@ -52,3 +52,8 @@ void BF::Projectile::collide(Entity& other)
 	other.health -= damage;
 	this->health--;
 }
+
+void BF::Projectile::collide_with_map()
+{
+	this->health = 0;
+}

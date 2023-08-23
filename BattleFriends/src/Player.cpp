@@ -21,7 +21,29 @@ BF::Player::Player(Player&& other) noexcept
 {
 	cooldown = other.cooldown;
 	counter = other.counter;
-	// TODO: add logging		std::cout << "Copied Player" << std::endl;
+	// TODO: add logging		std::cout << "Moved Player" << std::endl;
+}
+
+BF::Player& BF::Player::operator=(const Player& other)
+{
+	if (this != &other)
+	{
+		Entity::operator=(other);
+		cooldown = other.cooldown;
+		counter = other.counter;
+	}
+	return *this;
+}
+
+BF::Player& BF::Player::operator=(Player&& other) noexcept
+{
+	if (this != &other)
+	{
+		Entity::operator=(std::move(other));
+		cooldown = other.cooldown;
+		counter = other.counter;
+	}
+	return *this;
 }
 
 BF::Player::~Player()

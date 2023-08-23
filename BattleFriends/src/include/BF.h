@@ -1,6 +1,7 @@
 #pragma once
 #include <BFconstants.h>
 #include <loadResource.h>
+#include <Map.h>
 #include <Entity.h>
 #include <Player.h>
 #include <Projectile.h>
@@ -15,6 +16,9 @@ namespace BF
 	extern std::vector<Projectile> projectiles;
 	extern player_inputs game_inputs[PLAYER_COUNT];
 	extern GGPOSession* session;
+
+	//Non-game state
+	extern std::vector<BF::Entity> map_objects;
 	
 	// renderer variables
 	extern sf::RenderTarget* default_target;
@@ -37,7 +41,6 @@ namespace BF
 	void start_ggpo(int player_num);
 	void spawn_random_ent();
 	void loadTextures();
-	void loadMap(const std::string& name, const char* type, tinytmx::Map& map);
 	void updateEntities();
 	void updatePlayers();
 	void updateProjectiles();
@@ -47,6 +50,7 @@ namespace BF
 	void physics_loop();
 	size_t get_Entity_count();
 	size_t get_Projectile_count();
+	void drawMap(sf::RenderTarget& target = *default_target);
 	void drawEntities(sf::RenderTarget& target = *default_target);
 	void drawPlayers(sf::RenderTarget& target = *default_target);
 	void drawProjectiles(sf::RenderTarget& target = *default_target);
