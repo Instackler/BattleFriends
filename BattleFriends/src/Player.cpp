@@ -3,15 +3,7 @@
 #include <BF.h>
 
 
-/*
-BF::Player::Player(const char* filename)
-	:Entity(filename)
-{
-	// TODO: add logging		std::cout << "Created Player" << std::endl;
-}
-*/
-
-BF::Player::Player(int textureID)
+BF::Player::Player(const std::string& textureID)
 	:Entity(textureID)
 {
 	// TODO: add logging		std::cout << "Created Player" << std::endl;
@@ -29,26 +21,85 @@ BF::Player::Player(Player&& other) noexcept
 {
 	cooldown = other.cooldown;
 	counter = other.counter;
-	// TODO: add logging		std::cout << "Copied Player" << std::endl;
+	// TODO: add logging		std::cout << "Moved Player" << std::endl;
 }
 
-BF::Player::~Player()
+BF::Player& BF::Player::operator=(const Player& other)
 {
-	// TODO: add logging		std::cout << "Destroyed Player" << std::endl;
+	if (this != &other)
+	{
+		Entity::operator=(other);
+		cooldown = other.cooldown;
+		counter = other.counter;
+	}
+	return *this;
+}
+
+BF::Player& BF::Player::operator=(Player&& other) noexcept
+{
+	if (this != &other)
+	{
+		Entity::operator=(std::move(other));
+		cooldown = other.cooldown;
+		counter = other.counter;
+	}
+	return *this;
+}
+
+void BF::Player::collide(Entity& other)
+{
+	sf::Vector2f pos_diff{ other.getPosition().x - this->getPosition().x, other.getPosition().y - this->getPosition().y };
+	float d = hypotf(pos_diff.x, pos_diff.y);
+	sf::Vector2f pos_diff_normalized{ pos_diff.x / d, pos_diff.y / d };
+
+	float nvx = (other.m_SpeedX - this->m_SpeedX) * pos_diff_normalized.x;
+	float nvy = (other.m_SpeedY - this->m_SpeedY) * pos_diff_normalized.y;
+
+	float impulse = nvx + nvy;
+	this->m_SpeedX += impulse * pos_diff_normalized.x;
+	this->m_SpeedY += impulse * pos_diff_normalized.y;
+	other.m_SpeedX -= impulse * pos_diff_normalized.x;
+	other.m_SpeedY -= impulse * pos_diff_normalized.y;
+
+	float penetration = this->radius + other.radius - d;
+	float penX = penetration * pos_diff_normalized.x;
+	float penY = penetration * pos_diff_normalized.y;
+
+	this->move(penX * -0.5f, penY * -0.5f);
+	other.move(penX * 0.5f, penY * 0.5f);
+}
+
+void BF::Player::collide_with_map(Entity& other)
+{
+	sf::Vector2f pos_diff{ other.getPosition().x - this->getPosition().x, other.getPosition().y - this->getPosition().y };
+
+	if (this->m_SpeedX > 0 && this->getPosition().x < other.getGlobalBounds().left)
+	{
+		this->move(pos_diff.x - this->radius - other.getGlobalBounds().width * 0.5f, 0.f);
+		return;
+	}
+	if (this->m_SpeedX < 0 && this->getPosition().x > other.getGlobalBounds().left + other.getGlobalBounds().width)
+	{
+		this->move(pos_diff.x + this->radius + other.getGlobalBounds().width * 0.5f, 0.f);
+		return;
+	}
+	if (this->m_SpeedY > 0 && this->getPosition().y < other.getGlobalBounds().top)
+	{
+		this->move(0.f, pos_diff.y - this->radius - other.getGlobalBounds().height * 0.5f);
+		return;
+	}
+	if (this->m_SpeedY < 0 && this->getPosition().y > other.getGlobalBounds().top + other.getGlobalBounds().height)
+	{
+		this->move(0.f, pos_diff.y + this->radius + other.getGlobalBounds().height * 0.5f);
+		return;
+	}
 }
 
 void BF::Player::update(const player_inputs& inputs)
 {
-	if (out_of_bounds())
-	{
-		bounce();
-	}
-	else
-	{
-		setSpeed(0.f, 0.f);
-		applyInputs(inputs);
-		Entity::update();
-	}
+	setSpeed(0.f, 0.f);
+	applyInputs(inputs);
+	Entity::update();
 }
 
 void BF::Player::applyInputs(const player_inputs& inputs)

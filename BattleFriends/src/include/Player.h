@@ -12,14 +12,15 @@ namespace BF
 	class Player : public Entity
 	{
 	public:
-		//Player(const char* filename);
-		Player(int textureID);
+		Player(const std::string& textureID);
 		Player(const Player&);
 		Player() = delete;
 		Player(Player&& other) noexcept;
-		Player& operator= (const Player&) = default;
-		~Player();
+		Player& operator= (const Player&);
+		Player& operator= (Player&&) noexcept;
 
+		void collide(Entity& other);
+		void collide_with_map(Entity& other);
 		void update(const player_inputs& inputs);
 
 	private:

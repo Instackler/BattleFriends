@@ -2,14 +2,17 @@
 #include <BF.h>
 
 
+
 int main()
 {
 	//sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "BattleFriends", sf::Style::Fullscreen);
 	sf::RenderWindow window(sf::VideoMode(800, 450), "BattleFriends", sf::Style::Close);
 	SetForegroundWindow(window.getSystemHandle());
-	window.setVerticalSyncEnabled(true);
+	//window.setVerticalSyncEnabled(true);
+	window.setFramerateLimit(120);
 
 	BF::init(&window);
+	//BF::spawn_random_ent();
 
 	sf::Event event;
 	while (window.isOpen())

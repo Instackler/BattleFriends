@@ -38,6 +38,7 @@ void minimap::init()
 void minimap::draw(sf::RenderTarget& target)
 {
 	texture.clear();
+	BF::drawMap(texture);
 	BF::drawEntities(texture);
 	BF::drawPlayers(texture);
 	texture.display();

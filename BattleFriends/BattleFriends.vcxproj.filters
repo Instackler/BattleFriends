@@ -42,6 +42,9 @@
     <ClCompile Include="src\ggpo_callbacks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Map.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\BF.h">
@@ -65,12 +68,6 @@
     <ClInclude Include="src\include\minimap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\include\resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\include\loadResource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -78,6 +75,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\include\ggpo_callbacks.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\Map.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -93,6 +93,24 @@
     <Image Include="resources\bedrock.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="resources\png1.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\test.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\test2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="src\include\logo.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="src\include\proj.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="src\include\bedrock.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Font Include="resources\fonts\raleway\Raleway-Bold.ttf">
@@ -104,10 +122,14 @@
     <Font Include="resources\fonts\raleway\Raleway-SemiBold.ttf">
       <Filter>Resource Files</Filter>
     </Font>
+    <Font Include="src\include\fonts\raleway\Raleway-SemiBold.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="resources\BattleFriends.rc">
+    <ResourceCompile Include="resources\resources.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\map.tmx" />
   </ItemGroup>
 </Project>

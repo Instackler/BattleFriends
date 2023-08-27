@@ -1,6 +1,7 @@
 #pragma once
 #include <BFconstants.h>
 #include <loadResource.h>
+#include <Map.h>
 #include <Entity.h>
 #include <Player.h>
 #include <Projectile.h>
@@ -15,10 +16,13 @@ namespace BF
 	extern std::vector<Projectile> projectiles;
 	extern player_inputs game_inputs[PLAYER_COUNT];
 	extern GGPOSession* session;
+
+	//Non-game state
+	extern std::vector<BF::Entity> map_objects;
 	
 	// renderer variables
 	extern sf::RenderTarget* default_target;
-	extern std::unordered_map<int, sf::Texture> textures;
+	extern std::unordered_map<std::string, sf::Texture> textures;
 
 	// game loop functions
 	void init(sf::RenderTarget* target);
@@ -46,6 +50,7 @@ namespace BF
 	void physics_loop();
 	size_t get_Entity_count();
 	size_t get_Projectile_count();
+	void drawMap(sf::RenderTarget& target = *default_target);
 	void drawEntities(sf::RenderTarget& target = *default_target);
 	void drawPlayers(sf::RenderTarget& target = *default_target);
 	void drawProjectiles(sf::RenderTarget& target = *default_target);
