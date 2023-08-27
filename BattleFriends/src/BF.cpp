@@ -11,6 +11,8 @@ BF::player_inputs local_inputs = {};
 
 // Non-game state
 std::vector<BF::Entity> BF::map_objects;
+int BF::MAP_WIDTH = 0;
+int BF::MAP_HEIGHT = 0;
 
 // ggpo variables
 GGPOSession* BF::session;
@@ -177,6 +179,7 @@ void BF::init(sf::RenderTarget* target)
 	projectiles.reserve(1000);
 
 	BF::loadTextures();
+	BF::loadMap();
 
 	///////////////////////////////////// load the map
 	float background_scale = 10.f;
@@ -185,7 +188,6 @@ void BF::init(sf::RenderTarget* target)
 	background.setTexture(textures["bedrock"]);
 	background.setScale(background_scale, background_scale);
 	background.setColor(sf::Color(80, 80, 80, 255));
-	BF::loadMap();
 	/////////////////////////////////////////////////////
 
 	default_target = target;

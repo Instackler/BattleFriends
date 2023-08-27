@@ -250,6 +250,7 @@
   <ItemGroup>
     <ClInclude Include="src\include\BFconstants.h" />
     <ClInclude Include="src\include\Entity.h" />
+    <ClInclude Include="src\include\ggponet.h" />
     <ClInclude Include="src\include\ggpo_callbacks.h" />
     <ClInclude Include="src\include\loadResource.h" />
     <ClInclude Include="src\include\Map.h" />

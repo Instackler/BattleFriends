@@ -19,6 +19,8 @@ namespace BF
 
 	//Non-game state
 	extern std::vector<BF::Entity> map_objects;
+	extern int MAP_WIDTH;
+	extern int MAP_HEIGHT;
 	
 	// renderer variables
 	extern sf::RenderTarget* default_target;

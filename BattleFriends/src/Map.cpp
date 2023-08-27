@@ -22,12 +22,18 @@ void BF::loadMap()
 {
 	tinytmx::Map map;
 	BF::parseMap("map", "tmx", map);
+
+	BF::MAP_WIDTH = map.GetTileWidth();
+	BF::MAP_HEIGHT = map.GetTileHeight();
+
 	struct texparams
 	{
 		std::string name = "default";
 		unsigned int width = 0, height = 0;
 	};
+
 	std::map<int, texparams> texparams_by_gid;
+
 	for (auto tileset : map.GetTilesets())
 	{
 		int first_gid = tileset->GetFirstGid();

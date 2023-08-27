@@ -2,7 +2,6 @@
 #include <minimap.h>
 #include <BF.h>
 
-
 namespace
 {
 	#ifdef _DEBUG
@@ -24,10 +23,10 @@ void minimap::init()
 	unsigned int screen_width = BF::default_target->getSize().x;
 	unsigned int screen_height = BF::default_target->getSize().y;
 	float offset = screen_height * MINIMAP_OFFSET;
-	float scale = screen_height * MINIMAP_SCALE / std::max(MAP_WIDTH, MAP_HEIGHT);
-	float minimap_width = scale * MAP_WIDTH;
+	float scale = screen_height * MINIMAP_SCALE / std::max(BF::MAP_WIDTH, BF::MAP_HEIGHT);
+	float minimap_width = scale * BF::MAP_WIDTH;
 
-	texture.create(MAP_WIDTH, MAP_HEIGHT); //TODO: add error checking
+	texture.create(BF::MAP_WIDTH, BF::MAP_HEIGHT); //TODO: add error checking
 	texture.setSmooth(true);
 	minimap_sprite.setTexture(texture.getTexture());
 	minimap_sprite.setPosition(screen_width - minimap_width - offset, offset);

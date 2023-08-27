@@ -1,8 +1,12 @@
 #pragma once
 #include <BFconstants.h>
+#include <Map.h>
 
 namespace BF
 {
+	extern int MAP_WIDTH;
+	extern int MAP_HEIGHT;
+
 	class Entity : public sf::Sprite
 	{
 	public:
@@ -23,7 +27,7 @@ namespace BF
 		friend class Projectile;
 		friend class Player;
 		bool is_dead();
-		bool out_of_bounds(sf::FloatRect area = sf::FloatRect{0.f, 0.f, (float)MAP_WIDTH, (float)MAP_HEIGHT});
+		bool out_of_bounds(sf::FloatRect area = sf::FloatRect{0.f, 0.f, (float)BF::MAP_WIDTH, (float)BF::MAP_HEIGHT});
 		bool set_radius();
 
 	protected:
