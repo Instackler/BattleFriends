@@ -69,29 +69,34 @@ void BF::Player::collide(Entity& other)
 	other.move(penX * 0.5f, penY * 0.5f);
 }
 
+sf::Vector2f normalize(const sf::Vector2f& source)
+{
+	float length = std::hypotf(source.x, source.y);
+	if (length != 0)
+	{
+		return sf::Vector2f{ source.x / length, source.y / length };
+	}
+	else
+	{
+		return source;
+	}
+}
+
 void BF::Player::collide_with_map(Entity& other)
 {
-	sf::Vector2f pos_diff{ other.getPosition().x - this->getPosition().x, other.getPosition().y - this->getPosition().y };
+	sf::Vector2f nearest{};
+	float x_min = other.getGlobalBounds().left;
+	float x_max = x_min + other.getGlobalBounds().width;
+	float y_min = other.getGlobalBounds().top;
+	float y_max = y_min + other.getGlobalBounds().height;
+	nearest.x = std::clamp(getPosition().x, x_min, x_max);
+	nearest.y = std::clamp(getPosition().y, y_min, y_max);
+	sf::Vector2f diff{ nearest.x - getPosition().x, nearest.y - getPosition().y };
+	float overlap = radius - std::hypotf(std::abs(diff.x), std::abs(diff.y));
 
-	if (this->m_SpeedX > 0 && this->getPosition().x < other.getGlobalBounds().left)
+	if (overlap > 0.f)
 	{
-		this->move(pos_diff.x - this->radius - other.getGlobalBounds().width * 0.5f, 0.f);
-		return;
-	}
-	if (this->m_SpeedX < 0 && this->getPosition().x > other.getGlobalBounds().left + other.getGlobalBounds().width)
-	{
-		this->move(pos_diff.x + this->radius + other.getGlobalBounds().width * 0.5f, 0.f);
-		return;
-	}
-	if (this->m_SpeedY > 0 && this->getPosition().y < other.getGlobalBounds().top)
-	{
-		this->move(0.f, pos_diff.y - this->radius - other.getGlobalBounds().height * 0.5f);
-		return;
-	}
-	if (this->m_SpeedY < 0 && this->getPosition().y > other.getGlobalBounds().top + other.getGlobalBounds().height)
-	{
-		this->move(0.f, pos_diff.y + this->radius + other.getGlobalBounds().height * 0.5f);
-		return;
+		move(normalize(diff) * -overlap);
 	}
 }
 

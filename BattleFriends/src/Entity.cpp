@@ -118,7 +118,7 @@ bool BF::Entity::intersects(const Entity& other)
 	float other_x = other.getPosition().x;
 	float other_y = other.getPosition().y;
 
-	if (std::hypot(fabsf(x - other_x), fabsf(y - other_y)) < radius + other.radius)
+	if (std::hypotf(std::abs(x - other_x), std::abs(y - other_y)) < radius + other.radius)
 	{
 		return true;
 	}
@@ -128,7 +128,17 @@ bool BF::Entity::intersects(const Entity& other)
 
 bool BF::Entity::intersects_map(const Entity& other)
 {
-	if (this->getGlobalBounds().intersects(other.getGlobalBounds()))
+	sf::Vector2f nearest{};
+	float x_min = other.getGlobalBounds().left;
+	float x_max = x_min + other.getGlobalBounds().width;
+	float y_min = other.getGlobalBounds().top;
+	float y_max = y_min + other.getGlobalBounds().height;
+	nearest.x = std::clamp(getPosition().x, x_min, x_max);
+	nearest.y = std::clamp(getPosition().y, y_min, y_max);
+	sf::Vector2f diff{ nearest.x - getPosition().x, nearest.y - getPosition().y };
+	float overlap = radius - std::hypotf(std::abs(diff.x), std::abs(diff.y));
+
+	if (overlap > 0.f)
 	{
 		return true;
 	}

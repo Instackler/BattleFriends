@@ -329,7 +329,9 @@ void BF::checkCollisions()
 		for (int j = i + 1; j < players.size(); j++)   //for each unique pair
 		{
 			if (players[i].intersects(players[j]))
+			{
 				players[i].collide(players[j]);
+			}
 		}
 	}
 
@@ -337,7 +339,7 @@ void BF::checkCollisions()
 	{
 		for (auto&& map_object : map_objects)
 		{
-			if (projectile.getGlobalBounds().intersects(map_object.getGlobalBounds()))
+			if (projectile.intersects_map(map_object))
 			{
 				projectile.collide_with_map();
 			}
@@ -348,9 +350,17 @@ void BF::checkCollisions()
 	{
 		for (auto&& map_object : map_objects)
 		{
-			if (player.intersects_map(map_object))
+			player.collide_with_map(map_object);
+		}
+	}
+
+	for (auto&& player : players) //check player - projectile collisions
+	{
+		for (auto&& projectile : projectiles)
+		{
+			if (player.intersects(projectile))
 			{
-				player.collide_with_map(map_object);
+				projectile.collide(player);
 			}
 		}
 	}
