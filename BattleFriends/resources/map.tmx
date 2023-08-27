@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="1" height="1" tilewidth="8000" tileheight="8000" infinite="0" nextlayerid="3" nextobjectid="19">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="1" height="1" tilewidth="8000" tileheight="8000" infinite="0" nextlayerid="3" nextobjectid="76">
  <tileset firstgid="1" name="tileset" tilewidth="150" tileheight="150" tilecount="4" columns="0">
   <grid orientation="orthogonal" width="1" height="1"/>
   <tile id="0">
@@ -16,8 +16,23 @@
   </tile>
  </tileset>
  <objectgroup id="2" name="Object Layer 1">
-  <object id="8" gid="2" x="3265.41" y="3346.56" width="1677.88" height="115.091"/>
-  <object id="16" gid="1" x="2089" y="4322" width="485" height="498"/>
-  <object id="18" gid="3" x="5595" y="5293" width="98" height="2314"/>
+  <object id="19" gid="1" x="558.906" y="16.4667" width="16" height="16"/>
+  <object id="49" gid="1" x="3625.29" y="6992.05" width="113.109" height="1700.51"/>
+  <object id="56" gid="1" x="1429.12" y="6539.83" width="1710" height="139"/>
+  <object id="60" gid="1" x="1.48485" y="7999.5" width="7997.52" height="128"/>
+  <object id="61" gid="1" x="7891.29" y="8000.5" width="109.417" height="8000"/>
+  <object id="62" gid="1" x="1.0415" y="7945.25" width="109.417" height="7875.76"/>
+  <object id="63" gid="1" x="-1.30545" y="131.879" width="7997.52" height="128"/>
+  <object id="64" gid="1" x="1465" y="5546.5" width="1710" height="139"/>
+  <object id="65" gid="1" x="1529" y="5306.5" width="1710" height="139"/>
+  <object id="66" gid="1" x="4152.39" y="6665.01" width="718" height="139"/>
+  <object id="67" gid="1" x="4039.33" y="6665.01" width="113.109" height="1524.75"/>
+  <object id="68" gid="1" x="4807.45" y="6621.74" width="113.109" height="1482.33"/>
+  <object id="69" gid="1" x="4114.09" y="5272.08" width="718" height="139"/>
+  <object id="70" gid="1" x="5703.45" y="6626.84" width="113.109" height="1482.33"/>
+  <object id="71" name="bedrock" gid="1" x="5703.45" y="5194.84" width="113.109" height="1482.33"/>
+  <object id="73" gid="1" x="1247" y="4340" width="16" height="16"/>
+  <object id="74" gid="1" x="3.25" y="20.25" width="16" height="16"/>
+  <object id="75" gid="2" x="804.273" y="481.333" width="150" height="150"/>
  </objectgroup>
 </map>

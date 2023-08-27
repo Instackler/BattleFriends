@@ -45,11 +45,12 @@ void BF::loadMap()
 		for (auto object : obj_group->GetObjects())
 		{
 			texparams texpar = texparams_by_gid[object->GetTile()->gid];
+			
 			BF::Entity entity{ texpar.name };
-			entity.setPosition(object->GetX(), object->GetY());
+			entity.setOrigin(texpar.width / 2.f, texpar.height / 2.f);
 			entity.setScale(object->GetWidth() / texpar.width, object->GetHeight() / texpar.height);
-			BF::map_objects.emplace_back(entity);
+			entity.setPosition(object->GetX() + object->GetWidth() * 0.5f, object->GetY() - object->GetHeight() * 0.5f);
+			BF::map_objects.push_back(entity);
 		}
 	}
 }
-

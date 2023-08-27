@@ -127,10 +127,6 @@ void BF::updateEntities()
 {
 	for (auto&& entity : entities)
 	{
-		if (entity.out_of_bounds())
-		{
-			entity.bounce();
-		}
 		entity.update();
 	}
 }
@@ -321,7 +317,7 @@ void BF::checkCollisions()
 		{
 			if (player.intersects(entity))
 			{
-				entity.collide(player);
+				player.collide(entity);
 			}
 		}
 	}
@@ -350,9 +346,9 @@ void BF::checkCollisions()
 	{
 		for (auto&& map_object : map_objects)
 		{
-			if (player.getGlobalBounds().intersects(map_object.getGlobalBounds()))
+			if (player.intersects_map(map_object))
 			{
-				player.collide(map_object);
+				player.collide_with_map(map_object);
 			}
 		}
 	}

@@ -12,7 +12,7 @@ namespace BF
 		Projectile(Projectile&& other) noexcept;
 		Projectile& operator= (const Projectile&);
 		Projectile& operator= (Projectile&&) noexcept;
-		void collide(Entity& other) override;
+		void collide(Entity& other);
 		void collide_with_map();
 
 	private:

@@ -19,8 +19,8 @@ namespace BF
 		Player& operator= (const Player&);
 		Player& operator= (Player&&) noexcept;
 
-		~Player();
-
+		void collide(Entity& other);
+		void collide_with_map(Entity& other);
 		void update(const player_inputs& inputs);
 
 	private:

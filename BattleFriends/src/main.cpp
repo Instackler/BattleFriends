@@ -12,6 +12,7 @@ int main()
 	window.setFramerateLimit(120);
 
 	BF::init(&window);
+	//BF::spawn_random_ent();
 
 	sf::Event event;
 	while (window.isOpen())
