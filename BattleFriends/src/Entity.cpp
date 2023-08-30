@@ -16,86 +16,10 @@ BF::Entity::Entity(const std::string& textureID)
 	// TODO: add logging		std::cout << "Created Entity" << std::endl;
 }
 
-
-BF::Entity::Entity(const Entity& other)
-	:sf::Sprite(other)
-{
-	m_textureID = other.m_textureID;
-	setTexture(textures[m_textureID]);
-	radius = other.radius;
-	setPosition(other.getPosition());
-	setSpeed(other.m_SpeedX, other.m_SpeedY);
-	health = other.health;
-	stationary = other.stationary;
-}
-
-BF::Entity::Entity(Entity&& other) noexcept
-	:sf::Sprite(std::move(other))
-{
-	// TODO: add logging		std::cout << "Entity moved\n";
-	m_textureID = other.m_textureID;
-	setTexture(textures[m_textureID]);
-	radius = other.radius;
-	setPosition(other.getPosition());
-	setSpeed(other.m_SpeedX, other.m_SpeedY);
-	health = other.health;
-	stationary = other.stationary;
-}
-
-BF::Entity& BF::Entity::operator=(const Entity& other)
-{
-	// TODO: add logging		std::cout << "Entity& =\n";
-	if (this != &other)
-	{
-		sf::Sprite::operator=(other);
-		radius = other.radius;
-		m_textureID = other.m_textureID;
-		setTexture(textures[m_textureID]);
-		setPosition(other.getPosition());
-		setSpeed(other.m_SpeedX, other.m_SpeedY);
-		health = other.health;
-		stationary = other.stationary;
-	}
-	return *this;
-}
-
-BF::Entity& BF::Entity::operator=(Entity&& other) noexcept
-{
-	// TODO: add logging		std::cout << "Entity&& =\n";
-	if (this != &other)
-	{
-		sf::Sprite::operator=(std::move(other));
-		radius = other.radius;
-		m_textureID = other.m_textureID;
-		setTexture(textures[m_textureID]);
-		setPosition(other.getPosition());
-		setSpeed(other.m_SpeedX, other.m_SpeedY);
-		health = other.health;
-		stationary = other.stationary;
-	}
-	return *this;
-}
-
-
-void BF::Entity::bounce()
-{
-	move(-m_SpeedX, -m_SpeedY);
-	m_SpeedX = -m_SpeedX;
-	m_SpeedY = -m_SpeedY;
-}
-
 void BF::Entity::setSpeed(float x, float y)
 {
 	m_SpeedX = x;
 	m_SpeedY = y;
-}
-
-bool BF::Entity::set_radius()
-{
-	sf::FloatRect bounding_box = getGlobalBounds();
-	this->radius = bounding_box.width <= bounding_box.height ?
-		bounding_box.width / 2.f : bounding_box.height / 2.f;
-	return true;
 }
 
 void BF::Entity::update()
@@ -154,4 +78,16 @@ bool BF::Entity::out_of_bounds(sf::FloatRect area)
 {
 	sf::Vector2f pos = getPosition();
 	return !area.contains(pos.x + radius / 2, pos.y + radius / 2);
+}
+
+void BF::Entity::set_points()
+{
+	float rot = getRotation();
+	setRotation(0.f);
+	sf::FloatRect box = getGlobalBounds();
+	points[0] = { box.left, box.top };
+	points[1] = { box.left, box.top + box.height };
+	points[2] = { box.left + box.width, box.top + box.height };
+	points[3] = { box.left + box.width, box.top };
+	setRotation(rot);
 }

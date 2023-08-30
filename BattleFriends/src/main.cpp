@@ -12,7 +12,6 @@ int main()
 	window.setFramerateLimit(120);
 
 	BF::init(&window);
-	//BF::spawn_random_ent();
 
 	sf::Event event;
 	while (window.isOpen())
@@ -23,6 +22,7 @@ int main()
 		}
 
 		window.clear(sf::Color(20, 21, 26, 100));
+
 		BF::draw();
 		window.display();
 	}

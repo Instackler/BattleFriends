@@ -13,14 +13,10 @@ namespace BF
 	{
 	public:
 		Player(const std::string& textureID);
-		Player(const Player&);
 		Player() = delete;
-		Player(Player&& other) noexcept;
-		Player& operator= (const Player&);
-		Player& operator= (Player&&) noexcept;
 
 		void collide(Entity& other);
-		void collide_with_map(Entity& other);
+		void collide_with_map(const Entity& other);
 		void update(const player_inputs& inputs);
 
 	private:

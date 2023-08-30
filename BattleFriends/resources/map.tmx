@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="1" height="1" tilewidth="8000" tileheight="8000" infinite="0" nextlayerid="3" nextobjectid="76">
- <tileset firstgid="1" name="tileset" tilewidth="150" tileheight="150" tilecount="4" columns="0">
+ <tileset firstgid="1" name="tileset" tilewidth="150" tileheight="150" tilecount="3" columns="0">
   <grid orientation="orthogonal" width="1" height="1"/>
   <tile id="0">
    <image width="16" height="16" source="bedrock.png"/>
@@ -10,9 +10,6 @@
   </tile>
   <tile id="2">
    <image width="10" height="10" source="proj.png"/>
-  </tile>
-  <tile id="4">
-   <image width="150" height="150" source="logo3.png"/>
   </tile>
  </tileset>
  <objectgroup id="2" name="Object Layer 1">
@@ -24,7 +21,7 @@
   <object id="62" gid="1" x="1.0415" y="7945.25" width="109.417" height="7875.76"/>
   <object id="63" gid="1" x="-1.30545" y="131.879" width="7997.52" height="128"/>
   <object id="64" gid="1" x="1465" y="5546.5" width="1710" height="139"/>
-  <object id="65" gid="1" x="1529" y="5306.5" width="1710" height="139"/>
+  <object id="65" gid="1" x="1645.02" y="4501.41" width="1710" height="139" rotation="23.6688"/>
   <object id="66" gid="1" x="4152.39" y="6665.01" width="718" height="139"/>
   <object id="67" gid="1" x="4039.33" y="6665.01" width="113.109" height="1524.75"/>
   <object id="68" gid="1" x="4807.45" y="6621.74" width="113.109" height="1482.33"/>

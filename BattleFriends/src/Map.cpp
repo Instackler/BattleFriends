@@ -56,6 +56,8 @@ void BF::loadMap()
 			entity.setOrigin(texpar.width / 2.f, texpar.height / 2.f);
 			entity.setScale(object->GetWidth() / texpar.width, object->GetHeight() / texpar.height);
 			entity.setPosition(object->GetX() + object->GetWidth() * 0.5f, object->GetY() - object->GetHeight() * 0.5f);
+			entity.setRotation(object->GetRot());
+			entity.set_points();
 			BF::map_objects.push_back(entity);
 		}
 	}

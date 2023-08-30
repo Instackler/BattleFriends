@@ -11,15 +11,10 @@ namespace BF
 	{
 	public:
 		Entity(const std::string& textureID);
-		Entity(const Entity&);
 		Entity() = delete;
-		Entity(Entity&& other) noexcept;
-		Entity& operator=(const Entity&);
-		Entity& operator=(Entity&&) noexcept;
 
-		void bounce();
 		void setSpeed(float x, float y);
-		virtual void update();
+		void update();
 		bool intersects(const Entity& other);
 		bool intersects_map(const Entity& other);
 		friend void checkCollisions();
@@ -28,9 +23,10 @@ namespace BF
 		friend class Player;
 		bool is_dead();
 		bool out_of_bounds(sf::FloatRect area = sf::FloatRect{0.f, 0.f, (float)BF::MAP_WIDTH, (float)BF::MAP_HEIGHT});
-		bool set_radius();
+		void set_points();
 
 	protected:
+		sf::Vector2f points[4];
 		float m_SpeedX = 0.f, m_SpeedY = 0.f;
 		std::string m_textureID;
 		float radius = 1.f;

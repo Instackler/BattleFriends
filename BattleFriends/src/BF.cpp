@@ -255,13 +255,13 @@ void BF::run()
 
 void BF::draw(sf::RenderTarget& target)
 {
-	static sf::View player_view({ 0.f, 0.f , 1920, 1080 });
+	static sf::View player_view({ 0.f, 0.f , 3200, 1800 });
 
 	while (true)
 	{
 		if (update_mutex.try_lock())
 		{
-			player_view.setCenter(players.size() > 0 ? players[local_player_index].getPosition() : player_view.getCenter());
+			player_view.setCenter(players.size() > 0 ? players[local_player_index].getPosition() : player_view.getCenter()); //change
 			target.setView(player_view);
 			target.draw(background);
 			drawMap(target);
@@ -495,4 +495,17 @@ size_t BF::get_Entity_count()
 size_t BF::get_Projectile_count()
 {
 	return projectiles.size();
+}
+
+sf::Vector2f normalize(const sf::Vector2f& source)
+{
+	float length = std::hypotf(source.x, source.y);
+	if (length != 0)
+	{
+		return sf::Vector2f{ source.x / length, source.y / length };
+	}
+	else
+	{
+		return source;
+	}
 }

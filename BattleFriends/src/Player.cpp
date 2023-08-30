@@ -9,43 +9,6 @@ BF::Player::Player(const std::string& textureID)
 	// TODO: add logging		std::cout << "Created Player" << std::endl;
 }
 
-BF::Player::Player(const Player& other)
-	:Entity(other)
-{
-	cooldown = other.cooldown;
-	counter = other.counter;
-}
-
-BF::Player::Player(Player&& other) noexcept
-	:Entity(std::move(other))
-{
-	cooldown = other.cooldown;
-	counter = other.counter;
-	// TODO: add logging		std::cout << "Moved Player" << std::endl;
-}
-
-BF::Player& BF::Player::operator=(const Player& other)
-{
-	if (this != &other)
-	{
-		Entity::operator=(other);
-		cooldown = other.cooldown;
-		counter = other.counter;
-	}
-	return *this;
-}
-
-BF::Player& BF::Player::operator=(Player&& other) noexcept
-{
-	if (this != &other)
-	{
-		Entity::operator=(std::move(other));
-		cooldown = other.cooldown;
-		counter = other.counter;
-	}
-	return *this;
-}
-
 void BF::Player::collide(Entity& other)
 {
 	sf::Vector2f pos_diff{ other.getPosition().x - this->getPosition().x, other.getPosition().y - this->getPosition().y };
@@ -68,21 +31,8 @@ void BF::Player::collide(Entity& other)
 	this->move(penX * -0.5f, penY * -0.5f);
 	other.move(penX * 0.5f, penY * 0.5f);
 }
-
-sf::Vector2f normalize(const sf::Vector2f& source)
-{
-	float length = std::hypotf(source.x, source.y);
-	if (length != 0)
-	{
-		return sf::Vector2f{ source.x / length, source.y / length };
-	}
-	else
-	{
-		return source;
-	}
-}
-
-void BF::Player::collide_with_map(Entity& other)
+/*
+void BF::Player::collide_with_map(const Entity& other)
 {
 	sf::Vector2f nearest{};
 	float x_min = other.getGlobalBounds().left;
@@ -92,12 +42,42 @@ void BF::Player::collide_with_map(Entity& other)
 	nearest.x = std::clamp(getPosition().x, x_min, x_max);
 	nearest.y = std::clamp(getPosition().y, y_min, y_max);
 	sf::Vector2f diff{ nearest.x - getPosition().x, nearest.y - getPosition().y };
-	float overlap = radius - std::hypotf(std::abs(diff.x), std::abs(diff.y));
+	float overlap = radius - std::hypotf(diff.x, diff.y);
 
 	if (overlap > 0.f)
 	{
 		move(normalize(diff) * -overlap);
 	}
+}
+*/
+void BF::Player::collide_with_map(Entity& other)
+{
+	sf::Vector2f center_dist;
+	
+
+	/*
+	var v : Vector2d;
+	var current_box_corner : Point;
+	var center_box : Point = box1.getDot(0);
+
+	var max : Number = Number.NEGATIVE_INFINITY;
+	var box2circle : Vector2d = new Vector2d(c.x - center_box.x, c.y - center_box.y)
+		var box2circle_normalised : Vector2d = box2circle.unitVector
+
+		//get the maximum 
+		for (var i : int = 1; i < 5; i++)
+		{
+			current_box_corner = box1.getDot(i)
+				v = new Vector2d(
+					current_box_corner.x - center_box.x,
+					current_box_corner.y - center_box.y);
+			var current_proj : Number = v.dotProduct(box2circle_normalised)
+
+				if (max < current_proj) max = current_proj;
+		}
+	if (box2circle.magnitude - max - c.radius > 0 && box2circle.magnitude > 0) t.text = "No Collision"
+	else t.text = "Collision"
+	*/
 }
 
 void BF::Player::update(const player_inputs& inputs)

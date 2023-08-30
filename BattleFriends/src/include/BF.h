@@ -57,3 +57,5 @@ namespace BF
 	void drawPlayers(sf::RenderTarget& target = *default_target);
 	void drawProjectiles(sf::RenderTarget& target = *default_target);
 }
+
+sf::Vector2f normalize(const sf::Vector2f& source);
